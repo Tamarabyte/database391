@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block width %}col-lg-10{% endblock %}
+{% block content %}
+
+{% block scripts %}
+<script>
+  $('#submit').on('click', function () {
+      var $btn = $(this).button('loading')
+  })
+</script>
+{% endblock %}
+
+
+<h1 style="padding-left: 15px">Sign Up</h1>
+
+
+<form action="" method="post" name="register" class="form-horizontal">
+
+
+<div class="well clearfix">
+      <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">  
+            {{ form.hidden_tag() }}
+            
+            <legend>Registration Information</legend>
+            <p>
+                {{ form.username.label(class="control-label") }}
+                {{ form.username(maxlength=24, class="form-control input-sm") }}
+                {% if form.username.errors %}
+                  <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
+                {% endif %} 
+            </p>
+    
+      
+            <p>
+                {{ form.password.label(class="control-label") }}
+                {{ form.password(maxlength=24, class="form-control input-sm") }}
+                {% if form.password.errors %}
+                  <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
+                {% endif %}
+            </p>
+  
+            
+            <p>
+                {{ form.retype_password.label(class="control-label") }}
+                {{ form.retype_password(maxlength=24, class="form-control input-sm") }}
+                {% if form.retype_password.errors %}
+                  <span class="text-danger help-block">{{ form.retype_password.errors[0] }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                {{ form.email.label(class="control-label") }}
+                {{ form.email(maxlength=128, class="form-control input-sm") }}
+                {% if form.email.errors %}
+                  <span class="text-danger help-block">{{ form.email.errors[0] }}</span>
+                {% endif %}
+            </p>  
+      </div>   
+      <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">  
+            <legend>User Details</legend>
+
+            <p>
+                {{ form.first_name.label(class="control-label") }}
+                {{ form.first_name(maxlength=24, class="form-control input-sm") }}
+                {% if form.first_name.errors %}
+                  <span class="text-danger help-block">{{ form.first_name.errors[0] }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                {{ form.last_name.label(class="control-label") }}
+                {{ form.last_name(maxlength=24, class="form-control input-sm") }}
+                {% if form.last_name.errors %}
+                  <span class="text-danger help-block">{{ form.last_name.errors[0] }}</span>
+                {% endif %}
+            </p>
+            
+
+            <p>
+                {{ form.address.label(class="control-label") }}
+                {{ form.address(maxlength=128, class="form-control input-sm") }}
+                {% if form.address.errors %}
+                  <span class="text-danger help-block">{{ form.address.errors[0] }}</span>
+                {% endif %}
+            </p>
+            
+            <p>
+                {{ form.phone.label(class="control-label") }}
+                {{ form.phone(maxlength=14, placeholder="xxx-xxx-xxxx", class="form-control input-sm") }}
+                {% if form.phone.errors %}
+                  <span class="text-danger help-block">{{ form.phone.errors[0] }}</span>
+                {% endif %}
+            </p>
+      </div>
+</div>
+
+<p style="text-align: right">
+
+       <a href="\login" class="icon-tl-undo btn btn-default" style="margin-right: 5px; width: 112px;">
+             <span class="btn-txt" style="padding-right: 50px">cancel</span>
+       </a>
+ 
+       <button type="submit" class="icon-rocket2 btn btn-success" value="submit" id="submit" style="padding-right: 75px" data-loading-text="sending">
+          register
+       </button>
+ </p>
+
+
+
+</form>
+
+{% endblock %}

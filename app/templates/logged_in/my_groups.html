@@ -1,0 +1,24 @@
+{% extends "base_logged_in.html" %}
+
+{% block scripts %}
+<script>
+  $('#submit').on('click', function () {
+      var $btn = $(this).button('loading')
+  })
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div class="well" style="margin-bottom: 5px">
+<form action="" method="post" name="login" class="form-horizontal">
+
+      <p style="text-align: right; margin-top: 25px;">
+        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 135px" data-loading-text="uploading......">
+           upload pictures
+        </button>
+     </p>
+</form>
+</div>
+
+{% endblock %}

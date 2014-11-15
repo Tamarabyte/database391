@@ -1,0 +1,9 @@
+Hello {{ person.first_name }}!
+
+Thank you for registering with 391 Picture Sharer.
+
+Please click on the link below to complete your registration:
+{{ link }}
+
+Thanks!
+- 391 Project Team

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block width %}col-lg-5{% endblock %}
+
+{% block content %}
+
+<h1 class="page-header">Sign In</h1>
+
+<div class="well" style="margin-bottom: 5px">
+<form action="" method="post" name="login" class="form-horizontal">
+
+      {{ form.hidden_tag() }}
+      
+      <p>
+          {{ form.username.label(class="control-label") }}
+          {{ form.username(maxlength=24, class="form-control input-sm") }}
+          {% if form.username.errors %}
+            <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
+          {% endif %} 
+      </p>
+      
+
+      <p>
+          {{ form.password.label(class="control-label") }}
+          {{ form.password(maxlength=24, class="form-control input-sm") }}
+          {% if form.password.errors %}
+            <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
+          {% endif %}
+      </p>
+      
+      <p style="text-align: right; margin-top: 25px;">
+        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 55px">
+           login
+        </button>
+     </p>
+</form>
+</div>
+
+<div style="text-align: right">
+    <a href="/forgot/password" class="help-link">forgot password?</a>
+    <span class="help-link">/</span>
+    <a href="/register" class="help-link">register</a>
+</div>
+
+{% endblock %}
