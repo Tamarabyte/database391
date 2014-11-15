@@ -2754,7 +2754,7 @@ select[multiple].form-group-lg .form-control {
 .btn {
   display: inline-block;
   margin-bottom: 0;
-  font-weight: normal;
+  font-weight: bold;
   text-align: center;
   vertical-align: middle;
   -ms-touch-action: manipulation;
@@ -6594,4 +6594,5 @@ a.list-group-item-danger.active:focus {
   padding-left: 5px;
   padding-right: 40px;
   font-size: 15px;
+  font-weight: bold;
 }

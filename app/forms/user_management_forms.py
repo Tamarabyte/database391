@@ -68,7 +68,7 @@ class RegistrationForm(Form):
         
         # Don't let users use any fun characters
         username = self.username.data
-        if not re.match("^[\w\d_-]*$", username):
+        if not re.match("^[\w\d_\-]*$", username):
             self.username.errors.append("*can only be letters, digits, '-' and '_'")
             return False
         
@@ -76,6 +76,15 @@ class RegistrationForm(Form):
         user = User.query.get(username)
         if user is not None:
             self.username.errors.append('*already in use')
+            return False
+        
+        # Name can't have any weird characters
+        if not re.match("^[\w\d_\-']*$", self.first_name.data):
+            self.first_name.errors.append("*invalid characters")
+            return False
+        
+        if not re.match("^[\w\d_\-']*$", self.last_name.data):
+            self.last_name.errors.append("*invalid characters")
             return False
 
         # Email must be unique

@@ -2,9 +2,29 @@
 
 {% block scripts %}
 <script>
+  var ms;
+  var choices = [];
+  var defaults = [];
+  
+  $("#friends option").each(function() {
+    choices.push({ "id": $(this).val() + "", "name": $(this).text() + "" });
+  });
+  
+  ms = $('#magicsuggest').magicSuggest({
+    placeholder: ' Add friends to this group.',
+    highlight: false,
+    data: choices,
+    value: $("#friends").val()
+  });
+  
+  $(ms).on('selectionchange', function(){
+    $("#friends").val(this.getValue())
+  });
+      
+    
   $('#submit').on('click', function () {
       var $btn = $(this).button('loading')
-  })
+  });
 </script>
 {% endblock %}
 
@@ -12,10 +32,41 @@
 
 <div class="well" style="margin-bottom: 5px">
 <form action="" method="post" name="login" class="form-horizontal">
+  
+  {{ form.hidden_tag() }}
+  
+      <legend>New Group</legend>
+      
+      <p>
+          {{ form.group_name.label(class="control-label") }}
+          {{ form.group_name(maxlength=24, class="form-control input-sm") }}
+          {% if form.group_name.errors %}
+            <span class="text-danger help-block">{{ form.group_name.errors[0] }}</span>
+          {% endif %} 
+      </p>
+      
+
+      <p>
+          {{ form.notice.label(class="control-label") }}
+          {{ form.notice(maxlength=1024, class="form-control input-sm") }}
+          {% if form.notice.errors %}
+            <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
+          {% endif %}
+      </p>
+      
+      <p>
+          {{ form.friends.label(class="control-label") }}
+          {{ form.friends(class="hidden form-control input-sm") }}
+          <div id="magicsuggest"></div>
+          {% if form.friends.errors %}
+            <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
+          {% endif %}
+      </p>
+      
 
       <p style="text-align: right; margin-top: 25px;">
-        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 135px" data-loading-text="uploading......">
-           upload pictures
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 95px" data-loading-text="adding...">
+           add group
         </button>
      </p>
 </form>
