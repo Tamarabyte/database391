@@ -1,0 +1,239 @@
+{% extends "base_logged_in.html" %}
+
+{% block scripts %}
+<script>
+  var ms;
+  var ms2;
+  var choices = [];
+  var defaults = [];
+  var notices = [];
+  
+    // Form submitting
+    
+    $('#submit').on('click', function () {
+        $(this).button('loading')
+    });
+  
+    // Show/Hide Add Friends
+  
+  if ($('#showAddFriendsForm').is(':checked')) {
+    $("#add-group-list").show();
+    $("#show-add-friends-btn").addClass("icon-delete")
+    $("#show-add-friends-btn").addClass("btn-default")
+    $('#submit').show()
+  }
+  else {
+    $("#show-add-friends-btn").addClass("icon-plus");
+    $("#show-add-friends-btn").addClass("btn-success")
+    $("#add-group-list").hide();
+    $('#submit').hide()
+  }
+  
+  $("#show-add-friends-btn").on('click', function(event) {
+    event.preventDefault();
+    $("#add-group-list").toggle();
+    $('#showAddFriendsForm').prop("checked", !$('#showForm').prop("checked"));
+    $("#show-add-friends-btn").toggleClass("icon-plus");
+    $("#show-add-friends-btn").toggleClass("btn-default")
+    $("#show-add-friends-btn").toggleClass("icon-delete");
+    $("#show-add-friends-btn").toggleClass("btn-success")
+    $("#show-add-friends-btn").blur();
+    
+    if ($('#submit').is(":visible") &&
+        !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+      $('#submit').toggle();
+    }
+    else if ( ! $('#submit').is(":visible") &&
+        ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+      $('#submit').toggle();
+    }
+  });
+  
+  // Show/Hide Change Name
+  
+  if ($('#showChangeNameForm').is(':checked')) {
+    $("#add-group-list").show();
+    $("#show-change-name-btn").addClass("btn-default")
+    $('#submit').show()
+  }
+  else {
+    $("#show-change-name-btn").addClass("btn-success")
+    $("#change-name-list").hide();
+    $("#change-name-list").hide();
+    $('#submit').hide()
+  }
+  
+  $("#show-change-name-btn").on('click', function(event) {
+    event.preventDefault();
+    $("#change-name-list").toggle();
+    $('#group_name').val($('#legend-group-name').text());
+    $('#showChangeNameForm').prop("checked", !$('#showForm').prop("checked"));
+    $("#show-change-name-btn").toggleClass("btn-default")
+    $("#show-change-name-btn").toggleClass("btn-success")
+    $("#show-change-name-btn").blur();
+    
+    if ($('#submit').is(":visible") &&
+        !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+      $('#submit').toggle();
+    }
+    else if ( ! $('#submit').is(":visible") &&
+        ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+      $('#submit').toggle();
+    }
+  });
+  
+  
+// Notices Magic Select
+  
+  {% for notice in form.notice_list %}
+    notices.push("{{ notice | escape }}");
+  {% endfor %}
+
+  ms2 = $('#magicsuggest2').magicSuggest({
+    placeholder: '',
+    highlight: false,
+    data: notices,
+    maxEntryLength: 200,
+    value: [$("#notice").val()]
+  });
+  
+  if ($.trim($('#notice').val()).length == 0) {
+    ms2.clear();
+  }
+ 
+  $(ms2).on('selectionchange', function(){
+    
+    if (this.getValue().length == 2) {
+      this.removeFromSelection(this.getSelection()[0]);
+    }
+    
+    $("#notice").val(this.getValue());
+  });
+    
+
+  if (!$("#friends").val()) {
+    ms2.clear()
+    $('#notice-group').hide()
+    $('#notice').val("")
+  }
+  else {
+    $('#notice-group').show()
+  }
+  
+    // Friend Magic Select
+  
+  $("#friends option").each(function() {
+    choices.push({ "id": $(this).val() + "", "name": $(this).text() + "" });
+  });
+  
+  if (choices.length==0) {
+    $("#add-friends-section").html("");
+  }
+  
+  ms = $('#magicsuggest').magicSuggest({
+    placeholder: ' Add friends to this group.',
+    allowFreeEntries: false,
+    highlight: false,
+    data: choices,
+    value: $("#friends").val()
+  });
+  
+  $(ms).on('selectionchange', function(){
+    $("#friends").val(this.getValue())
+    
+    if (!$("#friends").val()) {
+      $('#notice-group').hide();
+      ms2.clear();
+      $('#notice').val("");
+    }
+    else {
+      $('#notice-group').show()
+    }
+  });
+</script>
+{% endblock %}
+
+
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
+{% block content %}
+  
+
+<div class="well" style="margin-bottom: 5px">
+  
+  <legend id="legend-group-name">{{ group.group_name }}
+  {% if not form.group_lists  %} (Private){% endif %}</legend>
+      
+      {% if form.group_lists  %}
+      <ul>
+        {% for group_list in form.group_lists %}
+        <li style="color: #00bc8c">
+          <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}" style="font-size: 18px;">{{ group_list.friend_id | capitalize }}</a>
+          <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}/delete" class="link-icon">x</a>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    
+    <form action="" method="post" name="submit" class="form-horizontal">
+      {{ form.hidden_tag() }}
+      <hr style="margin-top: 30px; margin-bottom: 30px;">
+      <legend style="float: left; width: auto; margin-bottom: 0px;">Change Name</legend>
+      <button class="btn icon-kub-edit" style="float: right;" id="show-change-name-btn"></button>
+      <div style="clear: both"></div>
+      
+      <div id="change-name-list">
+      <p style="padding-top:15px">
+          {{ form.group_name(maxlength=24, class="form-control input-sm") }}
+          {% if form.group_name.errors %}
+            <span class="text-danger help-block">{{ form.group_name.errors[0] }}</span>
+          {% endif %} 
+      </p>
+      </div>
+      
+      <div id="add-friends-section">
+      <hr style="margin-top: 30px; margin-bottom: 30px;">
+      <legend style="float: left; width: auto; margin-bottom: 0px;">Add Friends</legend>
+      <button class="btn" style="float: right;" id="show-add-friends-btn"></button>
+      <div style="clear: both"></div>
+      
+      <div id="add-group-list" style="margin-top: 5px">
+      
+      {{ form.friends.label(class="control-label") }}
+      {{ form.friends(class="hidden form-control input-sm") }}
+      <div id="magicsuggest"></div>
+      {% if form.friends.errors %}
+        <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
+      {% endif %}
+      </div>
+      
+      <div id="notice-group" style="margin-top: 14px">
+      <p>
+          {{ form.notice.label(class="control-label") }}
+          {{ form.notice(maxlength=1024, class="hidden form-control input-sm") }}
+          <div id="magicsuggest2"></div>
+          {% if form.notice.errors %}
+            <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
+          {% endif %}
+      </p>
+      </div>
+      </div>
+      {{ form.showAddFriendsForm(class="hidden") }}
+      {{ form.showChangeNameForm(class="hidden") }}
+      <hr style="margin-top: 30px; margin-bottom: 30px;">
+        
+      <p style="text-align: right; margin-top: 36px;">
+        <a href="/my/groups" class="icon-tl-undo btn btn-default" style="width: 90px;">
+          <span class="btn-txt" style="padding-right: 50px">back</span>
+        </a>
+    
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 155px; margin-left: 5px;" data-loading-text="updating...">
+           update group
+        </button>
+     </p>
+  </form>
+
+</form>
+</div>
+
+{% endblock %}

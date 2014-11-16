@@ -8,14 +8,16 @@
 </script>
 {% endblock %}
 
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
 {% block content %}
 
 <div class="well" style="margin-bottom: 5px">
 <form action="" method="post" name="login" class="form-horizontal">
 
       <p style="text-align: right; margin-top: 25px;">
-        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 135px" data-loading-text="uploading......">
-           upload pictures
+          <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 148px" data-loading-text="uploading...">
+           start upload
         </button>
      </p>
 </form>

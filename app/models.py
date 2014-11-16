@@ -3,6 +3,7 @@ from passlib.hash import md5_crypt
 
 from app import db
 from sqlalchemy import UniqueConstraint, ForeignKeyConstraint, ForeignKey
+from sqlalchemy.orm import relationship
 
 
 class User(db.Model):
@@ -11,6 +12,8 @@ class User(db.Model):
     user_name= db.Column(db.VARCHAR(24), primary_key=True)
     password = db.Column(db.VARCHAR(34), nullable=False)
     date_registered = db.Column(db.Date)
+    
+    group_lists = relationship("Group_List")
 
     def __repr__(self):
         return '<User %r>' % (self.user_name)
@@ -90,8 +93,8 @@ class Group_List(db.Model):
     
     group_id = db.Column(db.Integer, ForeignKey('groups.group_id'), primary_key=True)
     friend_id = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), primary_key=True)
-    data_added = db.Column(db.Date, nullable=False)
-    notice = db.Column(db.VARCHAR(1024), nullable=False)
+    date_added = db.Column(db.Date, nullable=False)
+    notice = db.Column(db.VARCHAR(1024), nullable=True)
     
     def __repr__(self):
         return '<Group List %r %r>' % (self.group_id, self.friend_id)

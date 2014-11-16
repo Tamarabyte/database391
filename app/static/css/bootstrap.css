@@ -14,6 +14,7 @@ html {
 }
 body {
   margin: 0;
+  font-size: 18px;
 }
 article,
 aside,
@@ -2807,8 +2808,8 @@ fieldset[disabled] .btn {
 }
 .btn-default {
   color: #ffffff;
-  background-color: #565656;
-  border-color: #565656;
+  background-color: #7C7C7C;
+  border-color: #7C7C7C;
 }
 .btn-default:hover,
 .btn-default:focus,
@@ -2817,8 +2818,8 @@ fieldset[disabled] .btn {
 .btn-default.active,
 .open > .dropdown-toggle.btn-default {
   color: #ffffff;
-  background-color: #464545;
-  border-color: #464545;
+  background-color: #565656;
+  border-color: #565656;
 }
 .btn-default:active,
 .btn-default.active,
@@ -2846,10 +2847,18 @@ fieldset[disabled] .btn-default.active {
   background-color: #464545;
   border-color: #464545;
 }
+
 .btn-default .badge {
   color: #464545;
   background-color: #ffffff;
 }
+
+.btn-noborder {
+  color: #ffffff;
+  background-color: transparent;
+  border-color: transparent;
+}
+
 .btn-primary {
   color: #ffffff;
   background-color: #375a7f;
@@ -2895,6 +2904,13 @@ fieldset[disabled] .btn-primary.active {
   color: #375a7f;
   background-color: #ffffff;
 }
+
+.btn-light {
+  color: #222;
+  background-color: #fff;
+  border-color: #fff;
+}
+
 .btn-success {
   color: #ffffff;
   background-color: #00bc8c;
@@ -4164,7 +4180,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-default {
-  background-color: #375a7f;
+  background-color: #303030;
   border-color: transparent;
 }
 .navbar-default .navbar-brand {
@@ -4728,9 +4744,9 @@ a.thumbnail.active {
   color: #e6e6e6;
 }
 .alert-info {
-  background-color: #3498db;
-  border-color: #3498db;
-  color: #ffffff;
+  background-color: #303030;
+  border-color: #303030;
+  color: #00bc8c;
 }
 .alert-info hr {
   border-top-color: #258cd1;
@@ -6595,4 +6611,16 @@ a.list-group-item-danger.active:focus {
   padding-right: 40px;
   font-size: 15px;
   font-weight: bold;
+}
+
+.link-icon {
+  color: #eee;
+  margin-left: 10px;
+  font-size: 15px;
+  font-weight: normal;
+}
+
+.link-icon:hover, .link-icon:focus {
+  text-decoration: none;
+  color: #e74c3c;
 }

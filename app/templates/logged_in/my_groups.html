@@ -5,13 +5,66 @@
   var ms;
   var choices = [];
   var defaults = [];
+  var notices = [];
+  var noticesval = [];
+  
+  // Form submitting
+  
+  $('#submit').on('click', function () {
+      $(this).button('loading');
+  });
+  
+  // Show/Hide Add New Group
+
+  if ($('#showForm').is(':checked')) {
+    $("#add-group").show();
+    $("#show-form-btn").addClass("icon-delete")
+    $("#show-form-btn").addClass("btn-default")
+  }
+  else {
+    $("#show-form-btn").addClass("icon-plus");
+    $("#show-form-btn").addClass("btn-success")
+    $("#add-group").hide();
+  }
+  
+    
+  if ($('#existing-groups').length == 0) {
+    $('#showForm').prop("checked", true);
+  }
+  
+  $("#show-form-btn").on('click', function() {
+    $("#add-group").toggle();
+    $('#showForm').prop("checked", !$('#showForm').prop("checked"));
+    $("#show-form-btn").toggleClass("icon-plus");
+    $("#show-form-btn").toggleClass("btn-default")
+    $("#show-form-btn").toggleClass("icon-delete");
+    $("#show-form-btn").toggleClass("btn-success")
+    $("#show-form-btn").blur();
+  });
+
+  // Notices
+  
+  if (!$("#friends").val()) {
+    $('#notice-group').hide()
+    $('#notice').val("")
+  }
+  else {
+    $('#notice-group').show()
+  }
+  
+    // Friend Magic Select
   
   $("#friends option").each(function() {
     choices.push({ "id": $(this).val() + "", "name": $(this).text() + "" });
   });
   
+  if (choices.length==0) {
+    $("#friend-fields").html("");
+  }
+
   ms = $('#magicsuggest').magicSuggest({
     placeholder: ' Add friends to this group.',
+    allowFreeEntries: false,
     highlight: false,
     data: choices,
     value: $("#friends").val()
@@ -19,25 +72,50 @@
   
   $(ms).on('selectionchange', function(){
     $("#friends").val(this.getValue())
-  });
-      
     
-  $('#submit').on('click', function () {
-      var $btn = $(this).button('loading')
+    if (!$("#friends").val()) {
+      $('#notice-group').hide();
+      $('#notice').val("");
+    }
+    else {
+      $('#notice-group').show()
+    }
   });
+  
 </script>
 {% endblock %}
 
+
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
 {% block content %}
+  
 
 <div class="well" style="margin-bottom: 5px">
-<form action="" method="post" name="login" class="form-horizontal">
+  
+  {% if existing_groups %}
+  <legend id="existing-groups">Existing Groups</legend>
+  <ul >
+    {% for group in existing_groups %}
+    <li style="color: #00bc8c">
+      <a href="/my/groups/{{ group.group_id }}" style="font-size: 18px;">{{ group.group_name }}</a>
+      <a href="/my/groups/delete/{{ group.group_id }}" class="link-icon">x</a>
+    </li>
+    {% endfor %}
+  </ul>
+  <hr style="margin-top: 30px; margin-bottom: 30px;">
+  {% endif %}
+  
+
+  <legend style="float: left; width: auto; margin-bottom: 0px;">Add New Group</legend>
+    <button class="btn" style="float: right;" id="show-form-btn"></button>
+  <div style="clear: both"></div>
+<form action="" method="post" name="submit" class="form-horizontal" id="add-group">
   
   {{ form.hidden_tag() }}
-  
-      <legend>New Group</legend>
       
-      <p>
+      
+      <p style="margin-top: 15px">
           {{ form.group_name.label(class="control-label") }}
           {{ form.group_name(maxlength=24, class="form-control input-sm") }}
           {% if form.group_name.errors %}
@@ -45,30 +123,30 @@
           {% endif %} 
       </p>
       
+      <div id="friend-fields">
+      {{ form.friends.label(class="control-label") }}
+      {{ form.friends(class="hidden form-control input-sm") }}
+      <div id="magicsuggest"></div>
+      {% if form.friends.errors %}
+        <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
+      {% endif %}
+      
+      <div id="notice-group" style="margin-top: 14px">
 
-      <p>
           {{ form.notice.label(class="control-label") }}
           {{ form.notice(maxlength=1024, class="form-control input-sm") }}
           {% if form.notice.errors %}
             <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
           {% endif %}
-      </p>
-      
-      <p>
-          {{ form.friends.label(class="control-label") }}
-          {{ form.friends(class="hidden form-control input-sm") }}
-          <div id="magicsuggest"></div>
-          {% if form.friends.errors %}
-            <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
-          {% endif %}
-      </p>
-      
-
-      <p style="text-align: right; margin-top: 25px;">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="padding-right: 95px" data-loading-text="adding...">
+      </div>
+      </div>
+      {{ form.showForm(class="hidden") }}
+      <p style="text-align: right; margin-top: 36px;">
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 135px" data-loading-text="adding...">
            add group
         </button>
      </p>
+
 </form>
 </div>
 

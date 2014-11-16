@@ -18,14 +18,6 @@ def home():
 def upload():
     return render_template('logged_in/upload.html', title='Upload Pictures', current_user=current_user)
 
-@app.route('/my/groups', methods=['GET', 'POST'])
-@login_required
-def groups():
-    form = NewGroup()
-    if form.validate_on_submit():
-        flash("success!", "success")
-    return render_template('logged_in/my_groups.html', title='My Groups', current_user=current_user, form=form)
-
 @app.route('/my/pictures')
 @login_required
 def pictures():

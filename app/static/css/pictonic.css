@@ -43,11 +43,17 @@ button[class^="icon-"]
 {
 	font-family: "pictonic";
 	font-weight: normal; font-style: normal;
-	/*-webkit-font-smoothing:  antialiased !important;
+	-webkit-font-smoothing:  antialiased !important;
 	-moz-font-smoothing:  antialiased !important;
 	font-smoothing:  antialiased !important;
-	line-height:1em;*/
-	font-weight: bold; 
+	line-height:1em;
+	font-weight: bold;
+	text-align: justify;
+}
+
+h1[class^="icon-"]
+{
+	margin-bottom: 10px;
 }
  
 a[class^="icon-"], a[class*="icon-"], span[class^="icon-"], span[class*="icon-"], small[class^="icon-"], small[class*="icon-"] {
@@ -57,6 +63,7 @@ a[class^="icon-"], a[class*="icon-"], span[class^="icon-"], span[class*="icon-"]
 	*display: inline;
 }
   
+
 .icon-kub-info:before { content:""; } 
 .icon-kub-locked:before { content:""; } 
 .icon-kub-link:before { content:""; } 
@@ -118,7 +125,7 @@ a[class^="icon-"], a[class*="icon-"], span[class^="icon-"], span[class*="icon-"]
 .icon-pin-3:before { content:""; } 
 .icon-cog-semifull:before { content:""; } 
 .icon-screenshot:before { content:""; } 
-.icon-rocket2:before { padding-right: 5px; content:""; } 
+.icon-rocket2:before { margin-right: 5px; content:""; } 
 .icon-warning:before { content:""; } 
 .icon-bolt:before { content:""; } 
 .icon-bbq1:before { content:""; } 
@@ -133,10 +140,21 @@ a[class^="icon-"], a[class*="icon-"], span[class^="icon-"], span[class*="icon-"]
 .icon-mapmarker-00:before { content:""; } 
 .icon-mapmarker2-blank:before { content:""; } 
 .icon-coins-01:before { content:""; } 
-.icon-kub-approve:before { content:""; } 
+.icon-kub-avatar-02:before { content:""; } 
 .icon-kub-cog:before { content:""; } 
-.icon-kub-like-01:before { content:""; } 
-.icon-kub-like-02:before { content:""; } 
+.icon-kub-warning:before { content:""; } 
+.icon-kub-approve:before { content:""; } 
 .icon-kub-remove:before { content:""; } 
-.icon-kub-warning:before { content:""; } 
-.icon-kub-speech-02:before { content:""; }
+.icon-kub-like-01:before { content:""; } 
+.icon-kub-like-02:before { content:""; } 
+.icon-kub-download:before { content:""; } 
+.icon-kub-upload:before { content:""; } 
+.icon-kub-help:before { content:""; } 
+.icon-kub-arw-right:before { content:""; } 
+.icon-kub-arw-left:before { content:""; } 
+.icon-delete:before { content:""; } 
+.icon-minus:before { content:""; } 
+.icon-box-chevron-right:before { content:""; } 
+.icon-box-chevron-left:before { content:""; } 
+.icon-chevron-right:before { content:""; } 
+.icon-chevron-left:before { content:""; }
