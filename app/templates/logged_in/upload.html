@@ -2,25 +2,120 @@
 
 {% block scripts %}
 <script>
-  $('#submit').on('click', function () {
-      var $btn = $(this).button('loading')
-  })
+$('#image').hide();
+$('#image_dir').hide();
+
+function uploadDirectory() {
+    $('#dir-btn').blur();
+    document.getElementById("image_dir").click();
+}
+
+function uploadFiles() {
+    $('#img-btn').blur();
+    document.getElementById("image").click();
+}
+
+function setImageSpan() {
+    if ($('#image').val().length == 0) {
+        $("#image-span").text("No files chosen.");
+    }
+    else {
+        $("#image-span").text("Files selected!");
+    }
+}
+
+$("#image_dir").on('change', function()  {
+    if ($('#image_dir').val().length == 0) {
+        $("#dir-span").text("No files chosen.");
+    }
+    else {
+        $("#dir-span").text("Files selected!");
+    }
+});
+
+function setDirSpan() {
+    document.getElementById("image").click();
+}
+
+
+$('#submit').on('click', function () {
+    var $btn = $(this).button('loading');
+});
 </script>
+
 {% endblock %}
 
 {% block header %}<h1> {{ title }}</h1>{% endblock %}
 
 {% block content %}
 
+
 <div class="well" style="margin-bottom: 5px">
-<form action="" method="post" name="login" class="form-horizontal">
-
-      <p style="text-align: right; margin-top: 25px;">
-          <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 148px" data-loading-text="uploading...">
-           start upload
+    <form action="" method="post" enctype="multipart/form-data" id="upload-form">
+        {{ form.hidden_tag() }}
+        
+        
+        <p style="margin-top: 15px">
+        <button id="dir-btn" class="icon-plus btn btn-success" style="width: 168px" onclick="uploadDirectory(); return false;">
+            <span class="btn-txt" style="height: 48px; vertical-align: bottom;" >Upload Directory</span>
         </button>
-     </p>
-</form>
-</div>
+        <span id="dir-span" class="file-text">No files chosen.</span>
+        <input directory id="image_dir" name="image_dir" type="file" webkitdirectory style="display: none;">
+        </p>
+        
+        <p style="margin-top: 20px">
+        
+        <button id="img-btn" class="icon-plus btn btn-success" style="width: 152px;" onclick="uploadFiles(); return false;">
+            <span class="btn-txt" style="height: 48px; vertical-align: bottom;" >Upload Images</span>
+        </button>
+        <span id="image-span" class="file-text">No files chosen.</span>
+        
+        <input hidden="" id="image" multiple name="image" onchange="setImageSpan()" type="file" style="display: none;">
+        {% if form.image.errors %}
+            <span class="text-danger help-block">{{ form.image.errors[0] }}</span>
+        {% endif %}
+        </p>
+        
+        <hr>
+        <p style="margin-top: 15px">
+        {{ form.permitted.label(class="control-label") }}
+        {{ form.permitted(class="form-control input-sm") }}
+        {% if form.permitted.errors %}
+            <span class="text-danger help-block">{{ form.permitted.errors[0] }}</span>
+        {% endif %}
+        </p>
 
+        <p style="margin-top: 15px">
+        {{ form.subject.label(class="control-label") }}
+        {{ form.subject(maxlength=128, class="form-control input-sm") }}
+        {% if form.subject.errors %}
+            <span class="text-danger help-block">{{ form.subject.errors[0] }}</span>
+        {% endif %}
+        </p>
+        
+        <p style="margin-top: 15px">
+        {{ form.place.label(class="control-label") }}
+        {{ form.place(maxlength=128, class="form-control input-sm") }}
+        {% if form.place.errors %}
+            <span class="text-danger help-block">{{ form.place.errors[0] }}</span>
+        {% endif %}
+        </p>
+        
+        <p style="margin-top: 15px">
+        {{ form.description.label(class="control-label") }}
+        {{ form.description(maxlength=2048, class="form-control input-sm") }}
+        {% if form.description.errors %}
+            <span class="text-danger help-block">{{ form.description.errors[0] }}</span>
+        {% endif %}
+        </p>
+
+        <p style="text-align: right; margin-top: 33px;">
+            <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 148px" data-loading-text="uploading...">
+               start upload
+            </button>
+         </p>
+            
+    </form>
+</div>
+      
 {% endblock %}

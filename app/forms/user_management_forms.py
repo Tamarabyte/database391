@@ -42,7 +42,7 @@ class RegistrationForm(Form):
 
     requiredValidator = validators.Required('*required')
     length24Validator = validators.Length(max=24, message='*max 24 characters')
-    length128Validator = validators.Length(max=24, message='*max 128 characters')
+    length128Validator = validators.Length(max=124, message='*max 128 characters')
     
     username = StringField('Username', validators=[requiredValidator, length24Validator])
     password = PasswordField('Password', validators=[requiredValidator, length24Validator])

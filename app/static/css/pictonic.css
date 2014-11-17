@@ -148,13 +148,15 @@ a[class^="icon-"], a[class*="icon-"], span[class^="icon-"], span[class*="icon-"]
 .icon-kub-like-01:before { content:""; } 
 .icon-kub-like-02:before { content:""; } 
 .icon-kub-download:before { content:""; } 
-.icon-kub-upload:before { content:""; } 
+.icon-kub-upload:before { margin-right: 5px; content:""; } 
 .icon-kub-help:before { content:""; } 
 .icon-kub-arw-right:before { content:""; } 
 .icon-kub-arw-left:before { content:""; } 
-.icon-delete:before { content:""; } 
+.icon-delete:before { vertical-align: middle; content:""; } 
 .icon-minus:before { content:""; } 
 .icon-box-chevron-right:before { content:""; } 
 .icon-box-chevron-left:before { content:""; } 
 .icon-chevron-right:before { content:""; } 
 .icon-chevron-left:before { content:""; }
+
+.icon-delete2:before { vertical-align: middle; content:""; } 

@@ -1,12 +1,18 @@
 {% extends "base_logged_in.html" %}
 
+{% block css %}
+  <link href="/static/css/magicsuggest.css" rel="stylesheet">
+{% endblock %}
+{% block scriptlibs %}
+  <script src="/static/js/magicsuggest-min.js"></script>
+{% endblock %}
+
+
 {% block scripts %}
 <script>
   var ms;
   var choices = [];
   var defaults = [];
-  var notices = [];
-  var noticesval = [];
   
   // Form submitting
   

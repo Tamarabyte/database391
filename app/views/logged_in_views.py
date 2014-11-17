@@ -5,7 +5,7 @@ from flask.ext.login import login_required, current_user
 from flask.ext.mail import Message
 
 from app import app, db
-from ..models import User, Person
+from ..models import Image
 from ..forms.group_forms import NewGroup
 
 @app.route('/home')
@@ -13,12 +13,9 @@ from ..forms.group_forms import NewGroup
 def home():
     return render_template('logged_in/home.html', title='Home', current_user=current_user)
 
-@app.route('/upload')
-@login_required
-def upload():
-    return render_template('logged_in/upload.html', title='Upload Pictures', current_user=current_user)
-
 @app.route('/my/pictures')
 @login_required
 def pictures():
-    return render_template('logged_in/my_pictures.html', title='My Pictures', current_user=current_user)
+    images = Image.query.filter_by(owner_name=current_user.user_name).all()
+    return render_template('logged_in/my_pictures.html', title='My Pictures', current_user=current_user,
+                           images=images, server_folder=app.config['SERVE_FOLDER'])

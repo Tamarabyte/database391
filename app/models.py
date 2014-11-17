@@ -79,7 +79,7 @@ class Group(db.Model):
     __tablename__ = 'groups'
     
     group_id= db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), nullable=False)
+    user_name = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), nullable=True)
     group_name = db.Column(db.VARCHAR(24), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     
@@ -105,10 +105,10 @@ class Image(db.Model):
     photo_id = db.Column(db.Integer, primary_key=True)
     owner_name = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), nullable=False)
     permitted = db.Column(db.Integer, ForeignKey('groups.group_id'), nullable=False)
-    subject = db.Column(db.VARCHAR(128), nullable=False)
-    place = db.Column(db.VARCHAR(128), nullable=False)
+    subject = db.Column(db.VARCHAR(128), nullable=True)
+    place = db.Column(db.VARCHAR(128), nullable=True)
     timing = db.Column(db.Date, nullable=False)
-    description = db.Column(db.VARCHAR(2048), nullable=False)
+    description = db.Column(db.VARCHAR(2048), nullable=True)
     thumbnail = db.Column(db.BLOB, nullable=False)
     photo = db.Column(db.BLOB, nullable=False)
         

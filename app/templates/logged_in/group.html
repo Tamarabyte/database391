@@ -1,12 +1,17 @@
 {% extends "base_logged_in.html" %}
 
+{% block css %}
+  <link href="/static/css/magicsuggest.css" rel="stylesheet">
+{% endblock %}
+{% block scriptlibs %}
+  <script src="/static/js/magicsuggest-min.js"></script>
+{% endblock %}
+
 {% block scripts %}
 <script>
   var ms;
-  var ms2;
   var choices = [];
   var defaults = [];
-  var notices = [];
   
     // Form submitting
     
@@ -20,19 +25,19 @@
     $("#add-group-list").show();
     $("#show-add-friends-btn").addClass("icon-delete")
     $("#show-add-friends-btn").addClass("btn-default")
-    $('#submit').show()
+    $('#submit-container').show()
   }
   else {
     $("#show-add-friends-btn").addClass("icon-plus");
     $("#show-add-friends-btn").addClass("btn-success")
     $("#add-group-list").hide();
-    $('#submit').hide()
+    $('#submit-container').hide()
   }
   
   $("#show-add-friends-btn").on('click', function(event) {
     event.preventDefault();
     $("#add-group-list").toggle();
-    $('#showAddFriendsForm').prop("checked", !$('#showForm').prop("checked"));
+    $('#showAddFriendsForm').prop("checked", !$('#showAddFriendsForm').prop("checked"));
     $("#show-add-friends-btn").toggleClass("icon-plus");
     $("#show-add-friends-btn").toggleClass("btn-default")
     $("#show-add-friends-btn").toggleClass("icon-delete");
@@ -41,78 +46,50 @@
     
     if ($('#submit').is(":visible") &&
         !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit').toggle();
+      $('#submit-container').toggle();
     }
     else if ( ! $('#submit').is(":visible") &&
         ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit').toggle();
+      $('#submit-container').toggle();
     }
   });
   
   // Show/Hide Change Name
   
   if ($('#showChangeNameForm').is(':checked')) {
-    $("#add-group-list").show();
+    $("#change-name-list").show();
     $("#show-change-name-btn").addClass("btn-default")
-    $('#submit').show()
+    $('#submit-container').show()
   }
   else {
     $("#show-change-name-btn").addClass("btn-success")
     $("#change-name-list").hide();
-    $("#change-name-list").hide();
-    $('#submit').hide()
+    $('#submit-container').hide()
   }
   
   $("#show-change-name-btn").on('click', function(event) {
     event.preventDefault();
     $("#change-name-list").toggle();
     $('#group_name').val($('#legend-group-name').text());
-    $('#showChangeNameForm').prop("checked", !$('#showForm').prop("checked"));
+    $('#showChangeNameForm').prop("checked", !$('#showChangeNameForm').prop("checked"));
     $("#show-change-name-btn").toggleClass("btn-default")
     $("#show-change-name-btn").toggleClass("btn-success")
     $("#show-change-name-btn").blur();
     
     if ($('#submit').is(":visible") &&
         !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit').toggle();
+      $('#submit-container').toggle();
     }
     else if ( ! $('#submit').is(":visible") &&
         ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit').toggle();
+      $('#submit-container').toggle();
     }
   });
   
   
 // Notices Magic Select
-  
-  {% for notice in form.notice_list %}
-    notices.push("{{ notice | escape }}");
-  {% endfor %}
-
-  ms2 = $('#magicsuggest2').magicSuggest({
-    placeholder: '',
-    highlight: false,
-    data: notices,
-    maxEntryLength: 200,
-    value: [$("#notice").val()]
-  });
-  
-  if ($.trim($('#notice').val()).length == 0) {
-    ms2.clear();
-  }
- 
-  $(ms2).on('selectionchange', function(){
-    
-    if (this.getValue().length == 2) {
-      this.removeFromSelection(this.getSelection()[0]);
-    }
-    
-    $("#notice").val(this.getValue());
-  });
-    
 
   if (!$("#friends").val()) {
-    ms2.clear()
     $('#notice-group').hide()
     $('#notice').val("")
   }
@@ -143,7 +120,6 @@
     
     if (!$("#friends").val()) {
       $('#notice-group').hide();
-      ms2.clear();
       $('#notice').val("");
     }
     else {
@@ -207,11 +183,10 @@
       {% endif %}
       </div>
       
-      <div id="notice-group" style="margin-top: 14px">
+      <div id="notice-group" style="margin-top: 14px; margin-bottom: 30px;">
       <p>
           {{ form.notice.label(class="control-label") }}
-          {{ form.notice(maxlength=1024, class="hidden form-control input-sm") }}
-          <div id="magicsuggest2"></div>
+          {{ form.notice(maxlength=1024, class="form-control input-sm") }}
           {% if form.notice.errors %}
             <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
           {% endif %}
@@ -220,20 +195,25 @@
       </div>
       {{ form.showAddFriendsForm(class="hidden") }}
       {{ form.showChangeNameForm(class="hidden") }}
-      <hr style="margin-top: 30px; margin-bottom: 30px;">
-        
-      <p style="text-align: right; margin-top: 36px;">
-        <a href="/my/groups" class="icon-tl-undo btn btn-default" style="width: 90px;">
-          <span class="btn-txt" style="padding-right: 50px">back</span>
-        </a>
-    
+
+      <div id="submit-container">
+      <hr style="margin-top: 30px; margin-bottom: 0px;"></hr>
+      <div style="text-align: right; margin-top: 20px;">
         <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 155px; margin-left: 5px;" data-loading-text="updating...">
            update group
         </button>
-     </p>
+     </div>
+</div>
   </form>
 
 </form>
 </div>
 
+{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+  <li><a href="/my/groups">My Groups</a></li>
+  <li class="active">{{ form.group.group_name }}</li>
+</ul>
 {% endblock %}

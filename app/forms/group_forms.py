@@ -24,20 +24,13 @@ class NewGroup(Form):
         users = User.query.filter(User.user_name != current_user.user_name, User.date_registered != None).all()
         
         self.friends.choices =  [(user.user_name, user.user_name.capitalize()) for user in users]
-        
-        distinct_notices = Group_List.query.join(Group).filter(
-            Group.user_name == current_user.user_name,
-            Group_List.notice != "",
-            Group_List.notice is not None,
-            ).group_by(Group_List.notice)
-        
-        self.notice_list = sorted([group_list.notice for group_list in distinct_notices], key=str.lower)
         self.group = None
         self.group_lists = []
         
 
     def validate(self):
-
+        self.showForm.data = True;
+        
         # Validate
         if not super(NewGroup, self).validate():
             return False
@@ -66,6 +59,7 @@ class NewGroup(Form):
            
         return True
     
+    
 class ExistingGroup(Form):
 
     group_name = StringField('Group Name', validators=[validators.Required('*required'), validators.Length(max=24, message='*max 24 characters')])
@@ -79,14 +73,6 @@ class ExistingGroup(Form):
         
         # set values
         self.group = existing_group
-        
-        distinct_notices = Group_List.query.join(Group).filter(
-            Group.user_name == current_user.user_name,
-            Group_List.notice != "",
-            Group_List.notice is not None,
-            ).group_by(Group_List.notice)
-        
-        self.notice_list = sorted([group_list.notice for group_list in distinct_notices], key=str.lower)
         self.group_lists = Group_List.query.filter_by(group_id = existing_group.group_id).all()
         
         users = User.query.filter(
@@ -112,23 +98,25 @@ class ExistingGroup(Form):
             flash("group name: " + group.group_name + " group name data: " + self.group_name.data)
             self.group_name.errors.append('*group with same name already exists')
             return False
-        
-        
 
-
-
-        existing_friend_ids = [group_list.friend_id for group_list in self.group_lists]
-        for friend_id in self.friends.data:
-            if friend_id not in existing_friend_ids:
-                
-                new_group_list = Group_List(
-                    group_id = self.group.group_id,
-                    friend_id=friend_id,
-                    notice=self.notice.data,
-                    date_added=datetime.date.today()
-                    )
-                self.group_lists.append(new_group_list)
-                db.session.add(new_group_list)
-        db.session.commit()
         return True
+
+
+class ExistingGroupList(Form):
     
+    notice = StringField("Why is this friend is part of this group?", widget=TextArea(), validators=[validators.Length(max=1024, message='*max 1024 characters')])
+    
+    def __init__(self, existing_group, existing_group_list, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        self.group_list = existing_group_list
+        self.group = existing_group
+        
+    def validate(self):
+
+       # Validate
+       if not super(ExistingGroupList, self).validate():
+           return False
+       
+       self.group_list.notice = self.notice.data
+       
+       return True

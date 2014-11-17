@@ -8,6 +8,9 @@ from app import app, db, mail
 from ..forms.user_management_forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm
 from ..models import User, Person
 
+
+from flask import current_app
+
 @app.login_manager.user_loader
 def load_user(id):
     return User.query.get(id)

@@ -12,15 +12,39 @@
 
 {% block content %}
 
-<div class="well" style="margin-bottom: 5px">
-<form action="" method="post" name="login" class="form-horizontal">
+<div class="well" style="padding-bottom: 25px; padding-top: 40px; padding-right: 50px; padding-left: 50px;">
 
-      <p style="text-align: right; margin-top: 25px;">
-        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 148px" data-loading-text="uploading...">
-           start upload
-        </button>
-     </p>
-</form>
+<div class="row">
+{% for image in images %}
+<div class="thumb-info">
+  <div class="caption pull-left">
+    <div class="pull-left">
+      <a href="#" class="btn btn-default btn-del icon-delete" role="button" ></a>
+      <a href="#" class="btn btn-success icon-kub-cog btn-edt" role="button" ></a>
+    </div>
+  </div>
+      <img class="thumb pull-right" src="{{ server_folder }}{{ image.thumbnail.decode() }}" alt="..."></img>
+    <div class="thumb-cap pull-right">
+      <h3 style="margin-top:8px">Thumbnail label</h3>
+      <p style="text-align: right">Here is some text.</p>
+    </div>
+
+  <div class="clearfix"> </div>
+</div>
+{% endfor %}
+</div>
+
+<div class="row" style="text-align: center">
+<ul class="pagination">
+  <li class="disabled"><a href="#">«</a></li>
+  <li class="active"><a href="#">1</a></li>
+  <li><a href="#">2</a></li>
+  <li><a href="#">3</a></li>
+  <li><a href="#">4</a></li>
+  <li><a href="#">5</a></li>
+  <li><a href="#">»</a></li>
+</ul>
+</div> 
 </div>
 
 {% endblock %}

@@ -3,5 +3,21 @@
 {% block header %}<h1>{{ title }}</h1>{% endblock %}
 
 {% block content %}
+<div class="well" style="margin-bottom: 5px; padding-top: 70px; padding-right: 50px; padding-left: 50px;">
+<form action="" method="post" name="login" class="form-horizontal">
 
+  <div class="row">
+
+
+        {% for image in images %}
+            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
+                <a class="thumbnail" href="#">
+                    <img class="img" src="{{ server_folder }}{{ image.thumbnail.decode() }}" alt="">
+                </a>
+            </div>
+        {% endfor %}
+        
+  </div>
+</form>
+</div>
 {% endblock %}

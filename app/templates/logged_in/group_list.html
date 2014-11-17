@@ -1,0 +1,45 @@
+{% extends "base_logged_in.html" %}
+
+{% block scripts %}
+<script>
+  $('#submit').on('click', function () {
+      $(this).button('loading');
+  });
+</script>
+{% endblock %}
+
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
+{% block content %}
+  
+
+<div class="well" style="margin-bottom: 5px">
+  
+  <legend id="legend-group-name">{{ form.group_list.friend_id }}</legend>
+  <form action="" method="post" name="submit" class="form-horizontal">
+      {{ form.hidden_tag() }}
+      {{ form.notice.label(class="control-label") }}
+      {{ form.notice(maxlength=1024, class="form-control") }}
+      {% if form.notice.errors %}
+          <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
+      {% endif %}
+        
+      <p style="text-align: right; margin-top: 35px;">
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 155px; margin-left: 5px;" data-loading-text="updating...">
+           update friend
+        </button>
+     </p>
+  </form>
+
+</form>
+</div>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+  <li><a href="/my/groups">My Groups</a></li>
+  <li><a href="/my/groups/{{ form.group.group_id }}">{{ form.group.group_name }}</a></li>
+  <li class="active">{{ form.group_list.friend_id }}</li>
+</ul>
+{% endblock %}
