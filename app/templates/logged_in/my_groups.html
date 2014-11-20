@@ -23,7 +23,7 @@
   // Show/Hide Add New Group
 
   if ($('#showForm').is(':checked')) {
-    $("#add-group").show();
+    $("#add-group").show('blind');
     $("#show-form-btn").addClass("icon-delete")
     $("#show-form-btn").addClass("btn-default")
   }
@@ -148,8 +148,8 @@
       </div>
       {{ form.showForm(class="hidden") }}
       <p style="text-align: right; margin-top: 36px;">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 135px" data-loading-text="adding...">
-           add group
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 125px" data-loading-text=" adding...">
+           <span class="btn-txt">add group</span>
         </button>
      </p>
 

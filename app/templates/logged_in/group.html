@@ -151,7 +151,7 @@
       </ul>
     {% endif %}
     
-    <form action="" method="post" name="submit" class="form-horizontal">
+<form action="" method="post" name="submit" class="form-horizontal">
       {{ form.hidden_tag() }}
       <hr style="margin-top: 30px; margin-bottom: 30px;">
       <legend style="float: left; width: auto; margin-bottom: 0px;">Change Name</legend>
@@ -199,12 +199,12 @@
       <div id="submit-container">
       <hr style="margin-top: 30px; margin-bottom: 0px;"></hr>
       <div style="text-align: right; margin-top: 20px;">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 155px; margin-left: 5px;" data-loading-text="updating...">
-           update group
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 150px; margin-left: 5px;" data-loading-text=" submitting...">
+           <span class="btn-txt">update group</span>                            
         </button>
      </div>
 </div>
-  </form>
+</form>
 
 </form>
 </div>
@@ -214,6 +214,6 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
   <li><a href="/my/groups">My Groups</a></li>
-  <li class="active">{{ form.group.group_name }}</li>
+  <li class="active">{{ form.group.group_name | capitalize }}</li>
 </ul>
 {% endblock %}

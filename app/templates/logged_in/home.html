@@ -1,23 +1,204 @@
 {% extends "base_logged_in.html" %}
 
+{% block css %}
+  <link href="/static/css/magicsuggest.css" rel="stylesheet">
+  <style>
+    .dropdown-menu {
+        display: none !important;
+    }
+  </style>
+{% endblock %}
+{% block scriptlibs %}
+  <script src="/static/js/magicsuggest-min.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    $('#submit').on('click', function () {
+        $(this).button('loading')
+    });
+    
+if ($('#showSearch').is(':checked')) {
+    $("#searchForm").show();
+    $("#show-search-btn").addClass("icon-delete");
+    $("#show-search-btn").addClass("btn-default");
+  }
+  else {
+    $("#show-search-btn").addClass("icon-plus");
+    $("#show-search-btn").addClass("btn-success");
+    $("#searchForm").hide();
+  }
+  
+  $("#show-search-btn").on('click', function(event) {
+    event.preventDefault();
+    $("#searchForm").toggle();
+    $('#showSearch').prop("checked", !$('#showSearch').prop("checked"));
+    $("#show-search-btn").toggleClass("icon-plus");
+    $("#show-search-btn").toggleClass("btn-default")
+    $("#show-search-btn").toggleClass("icon-delete");
+    $("#show-search-btn").toggleClass("btn-success")
+    $("#show-search-btn").blur();
+  });
+  
+  
+  // Search Text Magic Select
+  ms = $('#magicsuggest').magicSuggest({
+    placeholder: 'Enter a phrase or word to search by.',
+    allowFreeEntries: true,
+    highlight: false,
+    hideTrigger: true,
+    maxDropHeight: 0
+  });
+  
+  $(ms).on('selectionchange', function(){
+    $('#searchText option').each(function(index, option) {
+        $(option).remove();
+    });
+    
+    var values = this.getValue();
+    for (i = 0; i < values.length; i++) { 
+        $("#searchText").append('<option value="' + values[i] + '">' + values[i] + '</option>');
+    }
+     
+    $("#searchText").val(this.getValue());
+  });
+});
+</script>
+{% endblock %}
+
 {% block header %}<h1>{{ title }}</h1>{% endblock %}
 
 {% block content %}
-<div class="well" style="margin-bottom: 5px; padding-top: 70px; padding-right: 50px; padding-left: 50px;">
-<form action="" method="post" name="login" class="form-horizontal">
+<div class="well" style="margin-bottom: 5px; padding-top: 50px; padding-right: 50px; padding-left: 50px;">
 
+<!-- FORM -->
+<legend class="pull-left" style="width: auto">Search</legend>
+<button class="btn pull-right" id="show-search-btn"></button>
+<div class="clearfix"></div>
+
+<form action="" method="post" name="submit" id="searchForm">
+{{ form.hidden_tag() }}
+<div class="search-field">
+    {{ form.searchText.label(class="control-label") }}
+    {{ form.searchText(class="form-control input-sm hidden") }}
+    <div id="magicsuggest"></div>
+    {% if form.searchText.errors %}
+        <span class="text-danger help-block">{{ form.searchText.errors[0] }}</span>
+    {% endif %}
+</div>
+
+<div class="search-field">
+    <div style="display: inline-block; width: 150px">
+    {{ form.dateAfter.label(class="control-label") }}
+    {{ form.dateAfter(class="form-control input-sm", placeholder="yyyy-mm-dd") }}
+    </div><div style="display: inline-block; margin-left: 50px;">
+    {{ form.dateBefore.label(class="control-label") }}
+    {{ form.dateBefore(class="form-control input-sm", style="width: 150px", placeholder="yyyy-mm-dd") }}
+    </div>
+    <div class="clearfix""> </div>
+    {% if form.dateAfter.errors %}
+        <span class="text-danger help-block">{{ form.dateAfter.errors[0] }}</span>
+    {% elif  form.dateBefore.errors %}
+         <span class="text-danger help-block">{{ form.dateBefore.errors[0] }}</span>
+    {% endif %}
+</div>
+
+
+<div class="search-field">
+    <div class="pull-left" style="width: 150px">
+        {{ form.searchSelect.label(class="control-label") }}
+        {{ form.searchSelect(class="form-control input-sm") }}
+    </div>
+    <div class="pull-right">
+        <div style="margin-top: 22px"></div>
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 110px; margin-left: 5px; margin-bottom: 3px;" data-loading-text=" search">
+            <span class="btn-txt">search</span>                            
+        </button>
+    </div>
+    <div class="clearfix""> </div>
+    {% if form.searchSelect.errors %}
+        <span class="text-danger help-block">{{ form.searchSelect.errors[0] }}</span>
+    {% endif %}
+</div>
+
+ <div class="clearfix" style="margin-bottom: 20px"> </div>
+ {{ form.showSearch(class="hidden") }}
+</form>
+
+
+<!-- END FORM -->
+
+<div class="clearfix"></div>
+<hr style="margin-top: 0px;">
   <div class="row">
+    
+        {% if images.pages == 0 %}
+            <div class="search-field" style="margin-left:15px">No search results found.</div>
+        {% endif %}
 
-
-        {% for image in images %}
-            <div class="col-lg-3 col-md-4 col-xs-6 thumb">
-                <a class="thumbnail" href="#">
-                    <img class="img" src="{{ server_folder }}{{ image.thumbnail.decode() }}" alt="">
+        
+        {% for image in images.items %}
+            <div class="col-lg-3 col-md-3 col-xs-4">
+                <a class="thumbnail"  href="{{ url_for("picture_details", page=images.page, id=image.photo_id, from_page="1", search=search, order=order, before=before, after=after) }}">
+                    <img id="picture{{image.photo_id}}" class="thumb-alone" style="position: relative"src="{{ server_folder }}{{ image.thumbnail.decode() }}" alt="">
+                    <span class="label
+                {% if image.group.group_name == "public"%}
+                  label-success
+                {% elif image.group.group_name == "private" %}
+                  label-danger
+                {% else %}
+                  label-warning
+                {% endif %} inside-label">{{ views_dict.get(image.photo_id, 0) }}
+                {% if views_dict.get(image.photo_id, 0) == 1 %}view{% else %}views{% endif %}</span>
+                    </img>    
                 </a>
+                
             </div>
         {% endfor %}
-        
+
+    <div class="clearfix"></div>  
+    <div style="text-align: center">
+        {% if images.pages > 1 %}
+            <ul class="pagination">
+              
+              
+            {% if images.has_prev %}
+                <li><a href="{{ url_for('home', search=search, order=order, before=before, after=after, page=images.prev_num) }}">«</a></li>
+            {% endif %}
+              
+            {% if images.page > 2 %}
+                <li><a href="{{ url_for('home', page=1) }}">1</a></li>
+                <li class="static"><a href="#">...</a></li>
+            {% endif %}
+            
+            <li class="active"><a href="{{ url_for('home', search=search, page=images.page, before=before, after=after, order=order) }}">{{ images.page }}</a></li>
+              
+            {% for number in range(1, 3) %}
+                {% if images.page + number <=  images.pages %}
+                    <li><a href="{{ url_for('home', search=search, order=order, page=(images.page + number), before=before, after=after) }}">{{ images.page + number }}</a></li>
+                {% endif %}
+            {% endfor %}
+              
+            {% if images.page + 4 <= images.pages %}
+                <li class="static"><a href="#">...</a></li>
+                <li><a href="{{ url_for('home', search=search, order=order, page=images.pages, before=before, after=after) }}">{{ images.pages }}</a></li>
+            {% endif %}
+            
+            {% if images.has_next %}
+                <li><a href="{{ url_for('home', search=search, order=order, page=images.next_num, before=before, after=after) }}">»</a></li>
+            {% endif %}
+            </ul>
+        {% endif %}
+    </div>
   </div>
-</form>
 </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+{% if images.pages != 0 %}
+Showing {{ ((images.page - 1) * images.per_page) + 1 }} -
+{% if images.total < (images.per_page*images.page) %}{{images.total}}{% else %}{{ images.per_page*images.page }}{% endif %}
+of {{images.total}}
+{% endif %}
 {% endblock %}

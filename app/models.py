@@ -1,9 +1,10 @@
 import base64
 from passlib.hash import md5_crypt
 
-from app import db
+from app import db, app
 from sqlalchemy import UniqueConstraint, ForeignKeyConstraint, ForeignKey
 from sqlalchemy.orm import relationship
+import flask.ext.whooshalchemy as whooshalchemy
 
 
 class User(db.Model):
@@ -60,7 +61,10 @@ class User(db.Model):
     def createPasswordResetKey(password):
         crypt = md5_crypt.encrypt(password)
         return base64.urlsafe_b64encode(crypt.encode('utf-8'))
-
+    
+    images = relationship("Image", backref="owner")
+    groups = relationship("Group", backref="owner")
+    group_lists = relationship("Group_List", backref="member")
 
 class Person(db.Model):
     __tablename__ = 'persons'
@@ -83,6 +87,9 @@ class Group(db.Model):
     group_name = db.Column(db.VARCHAR(24), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     
+    images = relationship("Image", backref="group")
+    group_lists = relationship("Group_List", backref="group")
+    
     __table_args__ = (UniqueConstraint('user_name', 'group_name'),)
 
     def __repr__(self):
@@ -101,6 +108,7 @@ class Group_List(db.Model):
 
 class Image(db.Model):
     __tablename__ = 'images'
+    __searchable__ = ['subject', 'place', 'description']
     
     photo_id = db.Column(db.Integer, primary_key=True)
     owner_name = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), nullable=False)
@@ -111,7 +119,20 @@ class Image(db.Model):
     description = db.Column(db.VARCHAR(2048), nullable=True)
     thumbnail = db.Column(db.BLOB, nullable=False)
     photo = db.Column(db.BLOB, nullable=False)
-        
+     
+    viewed_by = relationship("Popularity", backref="image")
+    
+    def __repr__(self):
+        return '<Image %r %r>' % (self.photo_id, self.owner_name)
+
+whooshalchemy.whoosh_index(app, Image)
+
+class Popularity(db.Model):
+    __tablename__ = 'popularities'
+    
+    photo_id = db.Column(db.Integer, ForeignKey('images.photo_id'), primary_key=True, nullable=False)
+    viewed_by = db.Column(db.VARCHAR(24), ForeignKey('users.user_name'), primary_key=True, nullable=False)
+       
 
     def __repr__(self):
-        return '<Image %r %r>' % (self.phot_id, self.owner_name)
+        return '<Popularity %r %r>' % (self.photo_id, self.viewed_by)

@@ -17,9 +17,11 @@ login_manager.init_app(app)
 
 # load views
 import app.views.user_management_views as user_management_views
-import app.views.logged_in_views as logged_in_views
 import app.views.group_views as group_views
 import app.views.upload_views as upload_views
+import app.views.picture_views as picture_views
+import app.views.search_views as search_views
+import app.views.admin_views as admin_views
 login_manager.login_view = "login"
 
 

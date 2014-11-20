@@ -12,8 +12,8 @@ class UploadForm(Form):
     length128Validator = validators.Length(max=128, message='*max 128 characters')
     length2048Validator = validators.Length(max=2048, message='*max 128 characters')
     
-    permitted = SelectField('Allowed Groups', coerce=int)
-    subject = StringField('Subject', validators=[length128Validator])
+    permitted = SelectField('Allowed Group', coerce=int)
+    subject = StringField('Title', validators=[length128Validator])
     place = StringField('Location', validators=[length128Validator])
     description = TextAreaField('Description', validators=[length2048Validator])
     image = FileField('Upload Images')
@@ -21,7 +21,7 @@ class UploadForm(Form):
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
         groups = Group.query.filter(User.user_name == current_user.user_name).all();
-        self.permitted.choices = [(group.group_id, group.group_name) for group in groups]
+        self.permitted.choices = [(group.group_id, group.group_name.capitalize()) for group in groups]
         self.image_obj = None
         
     def validate(self):

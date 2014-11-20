@@ -25,8 +25,8 @@
       {% endif %}
         
       <p style="text-align: right; margin-top: 35px;">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 155px; margin-left: 5px;" data-loading-text="updating...">
-           update friend
+        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 145px; margin-left: 5px;" data-loading-text=" submitting...">
+           <span class="btn-txt">update friend</span>
         </button>
      </p>
   </form>
@@ -39,7 +39,7 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
   <li><a href="/my/groups">My Groups</a></li>
-  <li><a href="/my/groups/{{ form.group.group_id }}">{{ form.group.group_name }}</a></li>
-  <li class="active">{{ form.group_list.friend_id }}</li>
+  <li><a href="/my/groups/{{ form.group.group_id }}">{{ form.group.group_name | capitalize }}</a></li>
+  <li class="active">{{ form.group_list.friend_id | capitalize }}</li>
 </ul>
 {% endblock %}

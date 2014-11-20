@@ -1,0 +1,20 @@
+{% extends "base_logged_in.html" %}
+
+{% block scripts %}
+<script>
+  $('#submit').on('click', function () {
+      var $btn = $(this).button('loading')
+  })
+</script>
+{% endblock %}
+
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
+{% block content %}
+
+<div class="well" style="padding-bottom: 25px; padding-top: 40px; padding-right: 50px; padding-left: 50px;">
+    No pictures found. Why don't you <a href="{{ url_for('uploaded_file') }}">upload some</a>?
+</div>
+
+{% endblock %}
+

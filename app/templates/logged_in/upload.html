@@ -56,8 +56,8 @@ $('#submit').on('click', function () {
         
         
         <p style="margin-top: 15px">
-        <button id="dir-btn" class="icon-plus btn btn-success" style="width: 168px" onclick="uploadDirectory(); return false;">
-            <span class="btn-txt" style="height: 48px; vertical-align: bottom;" >Upload Directory</span>
+        <button id="dir-btn" class="btn btn-success" onclick="uploadDirectory(); return false;">
+           upload directory
         </button>
         <span id="dir-span" class="file-text">No files chosen.</span>
         <input directory id="image_dir" name="image_dir" type="file" webkitdirectory style="display: none;">
@@ -65,8 +65,8 @@ $('#submit').on('click', function () {
         
         <p style="margin-top: 20px">
         
-        <button id="img-btn" class="icon-plus btn btn-success" style="width: 152px;" onclick="uploadFiles(); return false;">
-            <span class="btn-txt" style="height: 48px; vertical-align: bottom;" >Upload Images</span>
+        <button id="img-btn" class="btn btn-success" onclick="uploadFiles(); return false;">
+            upload images
         </button>
         <span id="image-span" class="file-text">No files chosen.</span>
         
@@ -103,15 +103,15 @@ $('#submit').on('click', function () {
         
         <p style="margin-top: 15px">
         {{ form.description.label(class="control-label") }}
-        {{ form.description(maxlength=2048, class="form-control input-sm") }}
+        {{ form.description(rows=5, maxlength=2048, class="form-control input-sm") }}
         {% if form.description.errors %}
             <span class="text-danger help-block">{{ form.description.errors[0] }}</span>
         {% endif %}
         </p>
 
         <p style="text-align: right; margin-top: 33px;">
-            <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 148px" data-loading-text="uploading...">
-               start upload
+            <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 143px" data-loading-text=" uploading...">
+               <span class="btn-txt">start upload</span>
             </button>
          </p>
             

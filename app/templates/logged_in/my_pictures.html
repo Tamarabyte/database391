@@ -15,19 +15,43 @@
 <div class="well" style="padding-bottom: 25px; padding-top: 40px; padding-right: 50px; padding-left: 50px;">
 
 <div class="row">
-{% for image in images %}
-<div class="thumb-info">
-  <div class="caption pull-left">
-    <div class="pull-left">
-      <a href="#" class="btn btn-default btn-del icon-delete" role="button" ></a>
-      <a href="#" class="btn btn-success icon-kub-cog btn-edt" role="button" ></a>
+{% for image in images.items %}
+  <div class="thumb-info" id="picture{{ image.photo_id }}">
+    <div class="caption pull-right">
+      <div class="pull-right thumb-ctrl">
+        <a href="{{ url_for('delete_picture', page=images.page, id=image.photo_id) }}"
+           class="btn btn-default btn-del icon-delete" role="button" ></a>
+        <a href="{{ url_for('picture', id=image.photo_id, page=images.page, from_page=2) }}"
+           class="btn btn-success icon-kub-cog btn-edt" role="button" ></a>
+      </div>
     </div>
-  </div>
-      <img class="thumb pull-right" src="{{ server_folder }}{{ image.thumbnail.decode() }}" alt="..."></img>
-    <div class="thumb-cap pull-right">
-      <h3 style="margin-top:8px">Thumbnail label</h3>
-      <p style="text-align: right">Here is some text.</p>
-    </div>
+
+    <a href="{{ url_for('picture_details', id=image.photo_id, page=images.page, from_page=2) }}">
+      <div class="thumb pull-left"><img class="thumb-img" src="{{ server_folder }}{{ image.thumbnail.decode() }}"></img></div>
+    </a>
+    
+    <div class="thumb-cap">
+      <h3 style="margin-top:8px;">
+        {% if image.subject %}
+          {{ image.subject }}
+        {% else %}
+          Untitled
+        {% endif %}
+      </h3>
+      <div class="thumb-data">
+      <span class="label 
+      {% if image.group.group_name == "public"%}
+        label-success
+      {% elif image.group.group_name == "private" %}
+        label-danger
+      {% else %}
+        label-warning
+      {% endif %}"> {{ image.group.group_name }} </span>
+      <span style="font-size: 14px; margin-left: 5px;">uploaded {{ image.timing }} ---
+      {{ image.viewed_by|length }}{% if image.viewed_by|length == 1 %} view{% else %} views{% endif %}</span></div>
+      {% if image.place %} <div class="thumb-txt"><b>Location: </b> {{ image.place }}</div>{% endif %}
+      {% if image.description %}<div class="thumb-txt"><b>Description: </b>{{ image.description }}</div>{% endif %}
+</div>
 
   <div class="clearfix"> </div>
 </div>
@@ -35,16 +59,47 @@
 </div>
 
 <div class="row" style="text-align: center">
+  
+{% if images.pages > 1 %}
 <ul class="pagination">
-  <li class="disabled"><a href="#">«</a></li>
-  <li class="active"><a href="#">1</a></li>
-  <li><a href="#">2</a></li>
-  <li><a href="#">3</a></li>
-  <li><a href="#">4</a></li>
-  <li><a href="#">5</a></li>
-  <li><a href="#">»</a></li>
+  
+  
+  {% if images.has_prev %}
+    <li><a href="{{ url_for('pictures', page=images.prev_num) }}">«</a></li>
+  {% endif %}
+  
+  {% if images.page > 2 %}
+    <li><a href="{{ url_for('pictures', page=1) }}">1</a></li>
+    <li class="static"><a href="#">...</a></li>
+  {% endif %}
+  
+ 
+  
+  <li class="active"><a href="{{ url_for('pictures', page=images.page) }}">{{ images.page }}</a></li>
+  
+  {% for number in range(1, 3) %}
+      {% if images.page + number <=  images.pages %}
+        <li><a href="{{ url_for('pictures', page=(images.page + number)) }}">{{ images.page + number }}</a></li>
+      {% endif %}
+  {% endfor %}
+  
+  {% if images.page + 4 <= images.pages %}
+    <li class="static"><a href="#">...</a></li>
+    <li><a href="{{ url_for('pictures', page=images.pages) }}">{{ images.pages }}</a></li>
+  {% endif %}
+
+  {% if images.has_next %}
+    <li><a href="{{ url_for('pictures', page=images.next_num) }}">»</a></li>
+  {% endif %}
 </ul>
+{% endif %}
 </div> 
 </div>
 
+{% endblock %}
+
+{% block breadcrumbs %}
+Showing {{ ((images.page - 1) * images.per_page) + 1 }} -
+{% if images.total < (images.per_page*images.page) %}{{images.total}}{% else %}{{ images.per_page*images.page }}{% endif %}
+of {{images.total}}
 {% endblock %}

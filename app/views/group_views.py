@@ -155,7 +155,7 @@ def delete_group_list(group_id, user_name):
     
     flash("Are you sure you want to remove '{0}' from this group? "
           '<br><a href="/my/groups/{1}/{0}/delete/confirmed" class="alert-link">'
-          'I am sure!''</a>'.format(group_list.friend_id, existing_group.group_id), "danger")
+          'I am sure.''</a>'.format(group_list.friend_id, existing_group.group_id), "danger")
     
     return redirect('/my/groups/{}'.format(group_id))
 
