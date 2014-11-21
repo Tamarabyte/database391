@@ -1,5 +1,6 @@
 {% extends "base_logged_in.html" %}
 
+
 {% block css %}
   <link href="/static/css/magicsuggest.css" rel="stylesheet">
 {% endblock %}
@@ -7,213 +8,228 @@
   <script src="/static/js/magicsuggest-min.js"></script>
 {% endblock %}
 
+
+{% block header %}<h1> {{ title }}</h1>{% endblock %}
+
+
+{% block content %}
+<div class="well" style="margin-bottom: 5px">
+
+    <!-- Existing Group Lists Section -->
+    <legend id="legend-group-name">{{ group.group_name }}</legend>
+
+    {% if form.group_lists  %}
+    <ul>
+
+        <!-- Group List Link and Deletion Button -->
+        {% for group_list in form.group_lists %}
+        <li style="color: #00bc8c">
+            <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}" style="font-size: 18px;">{{ group_list.friend_id }}</a>
+            <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}/delete" class="link-icon">x</a>
+        </li>
+        {% endfor %}
+
+    </ul>
+    {% endif %}
+    <!-- End Existing Groups List Section -->
+
+    <!-- Group Edit Form -->
+    <form action="" method="post" name="submit" class="form-horizontal">
+        {{ form.hidden_tag() }}
+        <hr style="margin-top: 30px; margin-bottom: 30px;">
+        <legend style="float: left; width: auto; margin-bottom: 0px;">Change Name</legend>
+
+        <!-- Group Name Change Section -->
+        <button class="btn icon-kub-edit" style="float: right;" id="show-change-name-btn"></button>
+        <div style="clear: both"></div>
+
+        <div id="change-name-list">
+            <p style="padding-top:15px">
+                {{ form.group_name(maxlength=24, class="form-control input-sm") }}
+                {% if form.group_name.errors %}
+                  <span class="text-danger help-block">{{ form.group_name.errors[0] }}</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Add Group List Section -->
+        <div id="add-friends-section">
+            <hr style="margin-top: 30px; margin-bottom: 30px;">
+            <legend style="float: left; width: auto; margin-bottom: 0px;">Add Friends</legend>
+            <button class="btn" style="float: right;" id="show-add-friends-btn"></button>
+            <div style="clear: both"></div>
+
+            <!-- Friend Select Field -->
+            <div id="add-group-list" style="margin-top: 5px">
+
+                {{ form.friends.label(class="control-label") }}
+                {{ form.friends(class="hidden form-control input-sm") }}
+                <div id="magicsuggest"></div>
+
+                {% if form.friends.errors %}
+                <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
+                {% endif %}
+
+            </div>
+
+            <!-- Notice Field -->
+            <div id="notice-group" style="margin-top: 14px; margin-bottom: 30px;">
+                <p>
+                    {{ form.notice.label(class="control-label") }}
+                    {{ form.notice(maxlength=1024, class="form-control input-sm") }}
+
+                    {% if form.notice.errors %}
+                    <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
+                    {% endif %}
+
+                </p>
+            </div>
+
+        </div>
+        <!-- End Add Group List Secton -->
+
+        {{ form.showAddFriendsForm(class="hidden") }}
+        {{ form.showChangeNameForm(class="hidden") }}
+
+        <!-- Submit Field -->
+        <div id="submit-container">
+            <hr style="margin-top: 30px; margin-bottom: 0px;"></hr>
+            <div style="text-align: right; margin-top: 20px;">
+              <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 150px; margin-left: 5px;" data-loading-text=" submitting...">
+                 <span class="btn-txt">update group</span>
+              </button>
+            </div>
+        </div>
+    </form>
+    <!-- End Group Edit Form -->
+</div>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+<!-- Breadcrumbs -->
+<ul class="breadcrumb">
+    <li><a href="/my/groups">My Groups</a></li>
+    <li class="active">{{ form.group.group_name | capitalize }}</li>
+</ul>
+{% endblock %}
+
+
 {% block scripts %}
 <script>
-  var ms;
-  var choices = [];
-  var defaults = [];
-  
+    // Group Page Javascript
+
+    var ms;
+    var choices = [];
+    var defaults = [];
+
     // Form submitting
-    
     $('#submit').on('click', function () {
         $(this).button('loading')
     });
-  
-    // Show/Hide Add Friends
-  
-  if ($('#showAddFriendsForm').is(':checked')) {
-    $("#add-group-list").show();
-    $("#show-add-friends-btn").addClass("icon-delete")
-    $("#show-add-friends-btn").addClass("btn-default")
-    $('#submit-container').show()
-  }
-  else {
-    $("#show-add-friends-btn").addClass("icon-plus");
-    $("#show-add-friends-btn").addClass("btn-success")
-    $("#add-group-list").hide();
-    $('#submit-container').hide()
-  }
-  
-  $("#show-add-friends-btn").on('click', function(event) {
-    event.preventDefault();
-    $("#add-group-list").toggle();
-    $('#showAddFriendsForm').prop("checked", !$('#showAddFriendsForm').prop("checked"));
-    $("#show-add-friends-btn").toggleClass("icon-plus");
-    $("#show-add-friends-btn").toggleClass("btn-default")
-    $("#show-add-friends-btn").toggleClass("icon-delete");
-    $("#show-add-friends-btn").toggleClass("btn-success")
-    $("#show-add-friends-btn").blur();
-    
-    if ($('#submit').is(":visible") &&
-        !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit-container').toggle();
-    }
-    else if ( ! $('#submit').is(":visible") &&
-        ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit-container').toggle();
-    }
-  });
-  
-  // Show/Hide Change Name
-  
-  if ($('#showChangeNameForm').is(':checked')) {
-    $("#change-name-list").show();
-    $("#show-change-name-btn").addClass("btn-default")
-    $('#submit-container').show()
-  }
-  else {
-    $("#show-change-name-btn").addClass("btn-success")
-    $("#change-name-list").hide();
-    $('#submit-container').hide()
-  }
-  
-  $("#show-change-name-btn").on('click', function(event) {
-    event.preventDefault();
-    $("#change-name-list").toggle();
-    $('#group_name').val($('#legend-group-name').text());
-    $('#showChangeNameForm').prop("checked", !$('#showChangeNameForm').prop("checked"));
-    $("#show-change-name-btn").toggleClass("btn-default")
-    $("#show-change-name-btn").toggleClass("btn-success")
-    $("#show-change-name-btn").blur();
-    
-    if ($('#submit').is(":visible") &&
-        !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit-container').toggle();
-    }
-    else if ( ! $('#submit').is(":visible") &&
-        ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
-      $('#submit-container').toggle();
-    }
-  });
-  
-  
-// Notices Magic Select
 
-  if (!$("#friends").val()) {
-    $('#notice-group').hide()
-    $('#notice').val("")
-  }
-  else {
-    $('#notice-group').show()
-  }
-  
-    // Friend Magic Select
-  
-  $("#friends option").each(function() {
-    choices.push({ "id": $(this).val() + "", "name": $(this).text() + "" });
-  });
-  
-  if (choices.length==0) {
-    $("#add-friends-section").html("");
-  }
-  
-  ms = $('#magicsuggest').magicSuggest({
-    placeholder: ' Add friends to this group.',
-    allowFreeEntries: false,
-    highlight: false,
-    data: choices,
-    value: $("#friends").val()
-  });
-  
-  $(ms).on('selectionchange', function(){
-    $("#friends").val(this.getValue())
-    
+    // Show/Hide Group List Section
+    if ($('#showAddFriendsForm').is(':checked')) {
+      $("#add-group-list").show();
+      $("#show-add-friends-btn").addClass("icon-delete")
+      $("#show-add-friends-btn").addClass("btn-default")
+      $('#submit-container').show()
+    }
+    else {
+      $("#show-add-friends-btn").addClass("icon-plus");
+      $("#show-add-friends-btn").addClass("btn-success")
+      $("#add-group-list").hide();
+      $('#submit-container').hide()
+    }
+
+    $("#show-add-friends-btn").on('click', function(event) {
+      event.preventDefault();
+      $("#add-group-list").toggle();
+      $('#showAddFriendsForm').prop("checked", !$('#showAddFriendsForm').prop("checked"));
+      $("#show-add-friends-btn").toggleClass("icon-plus");
+      $("#show-add-friends-btn").toggleClass("btn-default")
+      $("#show-add-friends-btn").toggleClass("icon-delete");
+      $("#show-add-friends-btn").toggleClass("btn-success")
+      $("#show-add-friends-btn").blur();
+
+      if ($('#submit').is(":visible") &&
+          !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+        $('#submit-container').toggle();
+      }
+      else if ( ! $('#submit').is(":visible") &&
+          ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+        $('#submit-container').toggle();
+      }
+    });
+
+    // Show/Hide Change Name
+    if ($('#showChangeNameForm').is(':checked')) {
+      $("#change-name-list").show();
+      $("#show-change-name-btn").addClass("btn-default")
+      $('#submit-container').show()
+    }
+    else {
+      $("#show-change-name-btn").addClass("btn-success")
+      $("#change-name-list").hide();
+      $('#submit-container').hide()
+    }
+
+    $("#show-change-name-btn").on('click', function(event) {
+      event.preventDefault();
+      $("#change-name-list").toggle();
+      $('#group_name').val($('#legend-group-name').text());
+      $('#showChangeNameForm').prop("checked", !$('#showChangeNameForm').prop("checked"));
+      $("#show-change-name-btn").toggleClass("btn-default")
+      $("#show-change-name-btn").toggleClass("btn-success")
+      $("#show-change-name-btn").blur();
+
+      if ($('#submit').is(":visible") &&
+          !( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+        $('#submit-container').toggle();
+      }
+      else if ( ! $('#submit').is(":visible") &&
+          ( $("#add-group-list").is(":visible") || $("#change-name-list").is(":visible"))){
+        $('#submit-container').toggle();
+      }
+    });
+
+
+    // Show/Hide Notices
     if (!$("#friends").val()) {
-      $('#notice-group').hide();
-      $('#notice').val("");
+      $('#notice-group').hide()
+      $('#notice').val("")
     }
     else {
       $('#notice-group').show()
     }
-  });
+
+    // Friend Magic Select
+    $("#friends option").each(function() {
+      choices.push({ "id": $(this).val() + "", "name": $(this).text() + "" });
+    });
+
+    if (choices.length==0) {
+      $("#add-friends-section").html("");
+    }
+
+    ms = $('#magicsuggest').magicSuggest({
+      placeholder: ' Add friends to this group.',
+      allowFreeEntries: false,
+      highlight: false,
+      data: choices,
+      value: $("#friends").val()
+    });
+
+    $(ms).on('selectionchange', function(){
+      $("#friends").val(this.getValue())
+
+      if (!$("#friends").val()) {
+        $('#notice-group').hide();
+        $('#notice').val("");
+      }
+      else {
+        $('#notice-group').show()
+      }
+    });
 </script>
-{% endblock %}
-
-
-{% block header %}<h1> {{ title }}</h1>{% endblock %}
-
-{% block content %}
-  
-
-<div class="well" style="margin-bottom: 5px">
-  
-  <legend id="legend-group-name">{{ group.group_name }}
-  {% if not form.group_lists  %} (Private){% endif %}</legend>
-      
-      {% if form.group_lists  %}
-      <ul>
-        {% for group_list in form.group_lists %}
-        <li style="color: #00bc8c">
-          <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}" style="font-size: 18px;">{{ group_list.friend_id | capitalize }}</a>
-          <a href="/my/groups/{{ group.group_id }}/{{ group_list.friend_id }}/delete" class="link-icon">x</a>
-        </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    
-<form action="" method="post" name="submit" class="form-horizontal">
-      {{ form.hidden_tag() }}
-      <hr style="margin-top: 30px; margin-bottom: 30px;">
-      <legend style="float: left; width: auto; margin-bottom: 0px;">Change Name</legend>
-      <button class="btn icon-kub-edit" style="float: right;" id="show-change-name-btn"></button>
-      <div style="clear: both"></div>
-      
-      <div id="change-name-list">
-      <p style="padding-top:15px">
-          {{ form.group_name(maxlength=24, class="form-control input-sm") }}
-          {% if form.group_name.errors %}
-            <span class="text-danger help-block">{{ form.group_name.errors[0] }}</span>
-          {% endif %} 
-      </p>
-      </div>
-      
-      <div id="add-friends-section">
-      <hr style="margin-top: 30px; margin-bottom: 30px;">
-      <legend style="float: left; width: auto; margin-bottom: 0px;">Add Friends</legend>
-      <button class="btn" style="float: right;" id="show-add-friends-btn"></button>
-      <div style="clear: both"></div>
-      
-      <div id="add-group-list" style="margin-top: 5px">
-      
-      {{ form.friends.label(class="control-label") }}
-      {{ form.friends(class="hidden form-control input-sm") }}
-      <div id="magicsuggest"></div>
-      {% if form.friends.errors %}
-        <span class="text-danger help-block">{{ form.friends.errors[0] }}</span>
-      {% endif %}
-      </div>
-      
-      <div id="notice-group" style="margin-top: 14px; margin-bottom: 30px;">
-      <p>
-          {{ form.notice.label(class="control-label") }}
-          {{ form.notice(maxlength=1024, class="form-control input-sm") }}
-          {% if form.notice.errors %}
-            <span class="text-danger help-block">{{ form.notice.errors[0] }}</span>
-          {% endif %}
-      </p>
-      </div>
-      </div>
-      {{ form.showAddFriendsForm(class="hidden") }}
-      {{ form.showChangeNameForm(class="hidden") }}
-
-      <div id="submit-container">
-      <hr style="margin-top: 30px; margin-bottom: 0px;"></hr>
-      <div style="text-align: right; margin-top: 20px;">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 150px; margin-left: 5px;" data-loading-text=" submitting...">
-           <span class="btn-txt">update group</span>                            
-        </button>
-     </div>
-</div>
-</form>
-
-</form>
-</div>
-
-{% endblock %}
-
-{% block breadcrumbs %}
-<ul class="breadcrumb">
-  <li><a href="/my/groups">My Groups</a></li>
-  <li class="active">{{ form.group.group_name | capitalize }}</li>
-</ul>
 {% endblock %}

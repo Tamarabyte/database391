@@ -6,35 +6,41 @@
 <h1 class="page-header">Sign In</h1>
 
 <div class="well" style="margin-bottom: 5px">
-<form action="" method="post" name="login" class="form-horizontal">
+    <!-- Login Form -->
+    <form action="." method="POST" name="login" class="form-horizontal">
 
-      {{ form.hidden_tag() }}
-      
-      <p>
-          {{ form.username.label(class="control-label") }}
-          {{ form.username(maxlength=24, class="form-control input-sm") }}
-          {% if form.username.errors %}
-            <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
-          {% endif %} 
-      </p>
-      
+        {{ form.hidden_tag() }}
 
-      <p>
-          {{ form.password.label(class="control-label") }}
-          {{ form.password(maxlength=24, class="form-control input-sm") }}
-          {% if form.password.errors %}
-            <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
-          {% endif %}
-      </p>
-      
-      <p style="text-align: right; margin-top: 25px;">
-        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 90px">
-           <span class="btn-txt">login</span>
-        </button>
-     </p>
-</form>
+        <!-- Username Field -->
+        <p>
+            {{ form.username.label(class="control-label") }}
+            {{ form.username(maxlength=24, class="form-control input-sm") }}
+            {% if form.username.errors %}
+              <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
+            {% endif %}
+        </p>
+
+        <!-- Password Field -->
+        <p>
+            {{ form.password.label(class="control-label") }}
+            {{ form.password(maxlength=24, class="form-control input-sm") }}
+            {% if form.password.errors %}
+              <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
+            {% endif %}
+        </p>
+
+        <!-- Submit Button -->
+        <p style="text-align: right; margin-top: 25px;">
+          <button type="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 90px">
+             <span class="btn-txt">login</span>
+          </button>
+       </p>
+
+    </form>
+    <!-- End Login Form -->
 </div>
 
+<!-- Forgot Password/Register Links -->
 <div style="text-align: right">
     <a href="/forgot/password" class="help-link">forgot password?</a>
     <span class="help-link">/</span>

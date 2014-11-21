@@ -72,11 +72,21 @@ def admin(page=0, count=None):
         query = subjectByAllTimeQuery(query, user, subject, dateAfter, dateBefore)
         query = query.group_by(Image.subject).order_by('total DESC')
         rows = query.limit(limit).offset(offset).all()
+
+    # Construct
+
+
     
     # Construct query for All Users and All Subjects (hierarchy must be none)
     if user is None and subject is None:
         if count is None:
-            count = db.session.query(func.count(distinct(Image.subject))).first()[0]
+            countquery = db.session.query(func.count(distinct(Image.subject)))
+            count = subjectByAllTimeQuery(countquery, user, subject, dateAfter, dateBefore).first()[0]
+        
+        query = db.session.query(Image.subject, func.count(Image.photo_id).label('total'))
+        
+        
+        
             
     return render_template('logged_in/admin.html', title='Admin', current_user=current_user,
                            form=form, headers=table_headers, row_header=row_header, rows=rows,

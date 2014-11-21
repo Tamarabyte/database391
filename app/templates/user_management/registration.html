@@ -1,45 +1,30 @@
 {% extends "base.html" %}
 {% block width %}col-lg-10{% endblock %}
+
 {% block content %}
-
-{% block scripts %}
-<script>
-  $('#submit').on('click', function () {
-      var $btn = $(this).button('loading')
-  })
-</script>
-{% endblock %}
-
-
 <h1 style="padding-left: 15px">Sign Up</h1>
-
 
 <form action="" method="post" name="register" class="form-horizontal">
 
+    <!-- Registration Form Fields -->
+    <div class="well clearfix">
 
-<div class="well clearfix">
-      <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">  
+        <!-- Column 1 -->
+        <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">
             {{ form.hidden_tag() }}
             
             <legend>Registration Information</legend>
+
+            <!-- Username Field -->
             <p>
                 {{ form.username.label(class="control-label") }}
                 {{ form.username(maxlength=24, class="form-control input-sm") }}
                 {% if form.username.errors %}
-                  <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
+                    <span class="text-danger help-block">{{ form.username.errors[0] }}</span>
                 {% endif %} 
             </p>
     
-      
-            <p>
-                {{ form.password.label(class="control-label") }}
-                {{ form.password(maxlength=24, class="form-control input-sm") }}
-                {% if form.password.errors %}
-                  <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
-                {% endif %}
-            </p>
-  
-            
+            <!-- Password Field -->
             <p>
                 {{ form.retype_password.label(class="control-label") }}
                 {{ form.retype_password(maxlength=24, class="form-control input-sm") }}
@@ -48,34 +33,40 @@
                 {% endif %}
             </p>
             
+            <!-- Password Confirm Field -->
             <p>
                 {{ form.email.label(class="control-label") }}
                 {{ form.email(maxlength=128, class="form-control input-sm") }}
                 {% if form.email.errors %}
                   <span class="text-danger help-block">{{ form.email.errors[0] }}</span>
                 {% endif %}
-            </p>  
-      </div>   
-      <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">  
+            </p>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="col-lg-6" style="padding-left: 30px; padding-right: 30px; padding-top: 15px; padding-bottom: 15px;">
             <legend>User Details</legend>
 
+            <!-- First Name Field -->
             <p>
                 {{ form.first_name.label(class="control-label") }}
                 {{ form.first_name(maxlength=24, class="form-control input-sm") }}
                 {% if form.first_name.errors %}
-                  <span class="text-danger help-block">{{ form.first_name.errors[0] }}</span>
+                    <span class="text-danger help-block">{{ form.first_name.errors[0] }}</span>
                 {% endif %}
             </p>
             
+            <!-- Last Name Field -->
             <p>
                 {{ form.last_name.label(class="control-label") }}
                 {{ form.last_name(maxlength=24, class="form-control input-sm") }}
                 {% if form.last_name.errors %}
-                  <span class="text-danger help-block">{{ form.last_name.errors[0] }}</span>
+                    <span class="text-danger help-block">{{ form.last_name.errors[0] }}</span>
                 {% endif %}
             </p>
             
 
+            <!-- Address Field -->
             <p>
                 {{ form.address.label(class="control-label") }}
                 {{ form.address(maxlength=128, class="form-control input-sm") }}
@@ -84,6 +75,7 @@
                 {% endif %}
             </p>
             
+            <!-- Phone Number Field -->
             <p>
                 {{ form.phone.label(class="control-label") }}
                 {{ form.phone(maxlength=14, placeholder="xxx-xxx-xxxx", class="form-control input-sm") }}
@@ -91,22 +83,28 @@
                   <span class="text-danger help-block">{{ form.phone.errors[0] }}</span>
                 {% endif %}
             </p>
-      </div>
-</div>
+            
+        </div>
+    </div>
 
-<p style="text-align: right">
+    <!-- Back and Submit Buttons -->
+    <p style="text-align: right">
+        <a href="\login" class="icon-tl-undo btn btn-default" style="margin-right: 5px; width: 102px;">
+            <span class="btn-txt">cancel</span>
+        </a>
 
-       <a href="\login" class="icon-tl-undo btn btn-default" style="margin-right: 5px; width: 102px;">
-             <span class="btn-txt">cancel</span>
-       </a>
- 
-       <button type="submit" class="icon-rocket2 btn btn-success" value="submit" id="submit" style="width: 110px" data-loading-text=" wait...">
-          <span class="btn-txt">register</span>
-       </button>
- </p>
-
-
-
+        <button type="submit" class="icon-rocket2 btn btn-success" value="submit" id="submit" style="width: 110px" data-loading-text=" wait...">
+           <span class="btn-txt">register</span>
+        </button>
+    </p>
 </form>
+{% endblock %}
 
+{% block scripts %}
+<script>
+    // Bootstrap JS hook to disable form submission button
+    $('#submit').on('click', function () {
+        var $btn = $(this).button('loading')
+    })
+</script>
 {% endblock %}

@@ -1,85 +1,115 @@
 {% extends "base_logged_in.html" %}
 
-{% block scripts %}
-<script>
-
-</script>
-
-{% endblock %}
-
 {% block header %}<h1> {{ title }}</h1>{% endblock %}
 
 {% block content %}
-
-
 <div class="well" id="well" style="margin-bottom: 5px">
     
+    <!-- Show delete/edit buttons if the image belongs to the user -->
     {% if image.owner_name == current_user.user_name %}
-    <div class="pull-right thumb-ctrl">
-        {% if from_page == "home" %}
-            <a href="{{ url_for('delete_picture_from_details', page=page, from_page=1, id=image.photo_id, order=order, search=search, before=before, after=after) }}"
-        {% elif from_page == "pictures" %}
-        <a href="{{ url_for('delete_picture_from_details', page=page, from_page=2, id=image.photo_id) }}"
-        {% endif %}
-           class="btn btn-default btn-del icon-delete" role="button" ></a>
-        {% if from_page == "home" %}
-            <a href="{{ url_for('picture', id=image.photo_id, page=page, from_page=1, order=order, search=search, before=before, after=after) }}"
-        {% elif from_page == "pictures" %}
-            <a href="{{ url_for('picture', id=image.photo_id, page=page, from_page=2) }}"
-        {% endif %}
-           class="btn btn-success icon-kub-cog btn-edt" role="button" ></a>
-    </div>
+        <div class="pull-right thumb-ctrl">
+
+            {% if from_page == "home" %}
+                <a href="{{ url_for('delete_picture_from_details', page=page, from_page=1, id=image.photo_id, order=order, search=search, before=before, after=after) }}"
+            {% elif from_page == "pictures" %}
+                <a href="{{ url_for('delete_picture_from_details', page=page, from_page=2, id=image.photo_id) }}"
+            {% endif %}
+            class="btn btn-default btn-del icon-delete" role="button" ></a>
+
+            {% if from_page == "home" %}
+                <a href="{{ url_for('picture', id=image.photo_id, page=page, from_page=1, order=order, search=search, before=before, after=after) }}"
+            {% elif from_page == "pictures" %}
+                <a href="{{ url_for('picture', id=image.photo_id, page=page, from_page=2) }}"
+            {% endif %}
+            class="btn btn-success icon-kub-cog btn-edt" role="button" ></a>
+
+        </div>
     {% endif %}
     
     <div style="text-align: center; clear: both">
-
+        <!-- Image Section -->
         <img class="disp-img" id="img"  src="{{ server_folder }}{{ image.photo.decode() }}"></img>
-        
         <hr>
 
-    <div id="img-data" style="text-align: left; display: inline-block;">
-        
-        <h3 style="margin-top:10px;">
-            {% if image.subject %}
-              {{ image.subject }}
-            {% else %}
-              Untitled
-            {% endif %}
-        </h3>
-                
-        <div class="thumb-data" >
-            <span class="label 
-                {% if image.group.group_name == "public"%}
-                  label-success
-                {% elif image.group.group_name == "private" %}
-                  label-danger
+        <!-- Image Details Section -->
+        <div id="img-data" style="text-align: left; display: inline-block;">
+
+            <!-- Title -->
+            <h3 style="margin-top:10px;">
+                {% if image.subject %}
+                  {{ image.subject }}
                 {% else %}
-                  label-warning
-                {% endif %}" > {{ image.group.group_name }}
-            </span>
-            <span style="font-size: 14px; margin-left: 5px;">uploaded {{ image.timing }} ---
-            {{ image.viewed_by|length }}{% if image.viewed_by|length == 1 %} view{% else %} views{% endif %}</span>
-            <div style="margin-top: 25px"></div>
-            <div class="img-txt"><b>Uploaded By: </b> {{ image.owner_name }}</div>
-            {% if image.place %} <div class="img-txt" ><b>Location: </b> {{ image.place }}</div>{% endif %}
-            {% if image.description %}<div class="img-txt"><b>Description: </b>{{ image.description }}</div>{% endif %}
-            
+                  Untitled
+                {% endif %}
+            </h3>
+                
+            <div class="thumb-data" >
+
+                <!-- Permission label -->
+                <span class="label
+                    {% if image.group.group_name == "public"%}
+                      label-success
+                    {% elif image.group.group_name == "private" %}
+                      label-danger
+                    {% else %}
+                      label-warning
+                    {% endif %}" > {{ image.group.group_name }}
+                </span>
+
+                <!-- Date and number of views -->
+                <span style="font-size: 14px; margin-left: 5px;">
+                    uploaded {{ image.timing }} --- {{ image.viewed_by|length }}
+                    {% if image.viewed_by|length == 1 %}
+                        view
+                    {% else %}
+                        views
+                    {% endif %}
+                </span>
+
+                <div style="margin-top: 25px"></div>
+
+                <!-- Owner -->
+                <div class="img-txt"><b>Uploaded By: </b> {{ image.owner_name }}</div>
+
+                <!-- Place and Description -->
+                {% if image.place %}
+                    <div class="img-txt" ><b>Location: </b> {{ image.place }}</div>
+                {% endif %}
+
+                {% if image.description %}
+                    <div class="img-txt"><b>Description: </b>{{ image.description }}</div>
+                {% endif %}
+            </div>
         </div>
     </div>
-    </div>
-    
     <hr style="margin-bottom: 0px">
 </div>
-
 {% endblock %}
 
 {% block breadcrumbs %}
 <ul class="breadcrumb">
-  {% if from_page == "home" %}
-  <li><a href="{{ url_for('home', page=page, _anchor=anchor, search=search, order=order, before=before, after=after) }}">Home</a></li>
-  {% elif from_page == "pictures" %}
-  <li><a href="{{ url_for('pictures', page=page, _anchor=anchor) }}">My Pictures</a></li>
-  {% endif %}
-  <li class="active">{% if image.subject %}{{ image.subject | capitalize }}{% else %}Untitled Picture{% endif %}</li>
+<!-- Bread Crumbs -->
+    {% if from_page == "home" %}
+        <li>
+            <a href="{{ url_for('home', page=page, _anchor=anchor, search=search, order=order, before=before, after=after) }}">
+                Home
+            </a>
+        </li>
+    {% elif from_page == "pictures" %}
+        <li>
+            <a href="{{ url_for('pictures', page=page, _anchor=anchor) }}">
+                My Pictures
+            </a>
+        </li>
+    {% endif %}
+
+  <li class="active">
+    {% if image.subject %}
+        {{ image.subject | capitalize }}
+    {% else %}
+        Untitled Picture
+    {% endif %}
+  </li>
+
 </ul>
 {% endblock %}

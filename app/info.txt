@@ -1,0 +1,30 @@
+Technologies Used:
+- Nginx 1.6.2 (reverse proxy)
+- Gunicorn 19.1.1 (WSGI server)
+- MySQL 5.6.20
+- Python 3.4.2
+- Boostrap3 (Custom Modification of Bootswatch Darkly)
+- JQuery2
+- MagicSuggest2 (Pretty JS Multiselect widgets)
+
+Following Python External Librarires:
+    - Flask 0.10.1 (web framework)
+        - flask-sqlalchemy 2.0
+        - flask-whoosh (personal custom fork https://github.com/Tamarabyte/Flask-WhooshAlchemy)
+        - flash-login 0.2.11 (handling user sessions)
+        - flash-WTF 0.10.2 (form objects)
+    - Jinja2 2.7.3 (html templates)
+    - Pillow 2.6 (python image library)
+    - passlib 1.6.2 (password hash algorithms)
+
+Recommended Browser:
+Chrome/Safari/Chromium
+
+
+References:
+
+Flask file upload documentation:
+http://flask.pocoo.org/docs/0.10/patterns/fileuploads/
+
+Thumbnail resize algorithm provided by:
+http://united-coders.com/christian-harms/image-resizing-tips-every-coder-should-know/

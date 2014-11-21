@@ -1,11 +1,22 @@
-from flask.ext.wtf import Form
-from wtforms import StringField, BooleanField, PasswordField, HiddenField, SubmitField, ValidationError, validators
-import re
+"""
+User Management Forms
 
+Contains the forms for:
+- logging in users
+- registering users
+- reporting a forgotten password
+- changing a password
+"""
+
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, SubmitField, validators
+import re
 from ..models import User, Person
 
 class LoginForm(Form):
+    """ Used on the login page to login users """
     
+    # Form fields
     username = StringField('Username', validators=[validators.Required('*required'),])
     password = PasswordField('Password', validators=[validators.Required('*required'),])
     submit = SubmitField('Sign in')
@@ -39,11 +50,14 @@ class LoginForm(Form):
     
 
 class RegistrationForm(Form):
+    """ Used on the registration page to register users """
 
+    # Validate length for person fields
     requiredValidator = validators.Required('*required')
     length24Validator = validators.Length(max=24, message='*max 24 characters')
     length128Validator = validators.Length(max=124, message='*max 128 characters')
     
+    # Form fields
     username = StringField('Username', validators=[requiredValidator, length24Validator])
     password = PasswordField('Password', validators=[requiredValidator, length24Validator])
     retype_password = PasswordField('Retype Password', validators=[requiredValidator, length24Validator, validators.EqualTo('password', message='*passwords did not match')])
@@ -73,8 +87,9 @@ class RegistrationForm(Form):
             return False
         
         # Username must unique
+        # All is reserved for our admin queries
         user = User.query.get(username)
-        if user is not None:
+        if user is not None or username=="All Users":
             self.username.errors.append('*already in use')
             return False
         
@@ -118,14 +133,16 @@ class RegistrationForm(Form):
         return True
     
 class ForgotPasswordForm(Form):
+    """ Used on the forgot password page to collect users email to send reset password link to. """
     
     requiredValidator = validators.Required('*required')
-    
+    # Form field
     email = StringField('Email', validators=[requiredValidator])
     
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
         self.user = None
+        self.person = None
 
     def validate(self):
 
@@ -147,10 +164,11 @@ class ForgotPasswordForm(Form):
         return True
     
 class ResetPasswordForm(Form):
+    """ Used on the reset password page to collect user's new password. """
     
     requiredValidator = validators.Required('*required')
     length24Validator = validators.Length(max=24, message='*max 24 characters')
-    
+    # Form fields
     password = PasswordField('Password', validators=[requiredValidator, length24Validator])
     retype_password = PasswordField('Retype Password', validators=[requiredValidator, length24Validator, validators.EqualTo('password', message='*passwords did not match')])
     

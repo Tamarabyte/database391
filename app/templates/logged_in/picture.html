@@ -1,14 +1,5 @@
 {% extends "base_logged_in.html" %}
 
-{% block scripts %}
-<script>
-$('#submit').on('click', function () {
-    var $btn = $(this).button('loading');
-});
-</script>
-
-{% endblock %}
-
 {% block header %}<h1> {{ title }}</h1>{% endblock %}
 
 {% block content %}
@@ -18,59 +9,91 @@ $('#submit').on('click', function () {
     
     <div style="text-align: center"><img class="disp-img" src="{{ server_folder }}{{ image.photo.decode() }}"></img></div>
     
+    <!-- Picture Edit Form -->
     <form action="" method="post" name="submit" class="form-horizontal">
         {{ form.hidden_tag() }}
         
+        <!-- Group Select Field -->
         <p style="margin-top: 15px">
-        {{ form.permitted.label(class="control-label") }}
-        {{ form.permitted(class="form-control input-sm") }}
-        {% if form.permitted.errors %}
-            <span class="text-danger help-block">{{ form.permitted.errors[0] }}</span>
-        {% endif %}
+            {{ form.permitted.label(class="control-label") }}
+            {{ form.permitted(class="form-control input-sm") }}
+            {% if form.permitted.errors %}
+                <span class="text-danger help-block">{{ form.permitted.errors[0] }}</span>
+            {% endif %}
         </p>
 
+        <!-- Title Field -->
         <p style="margin-top: 15px">
-        {{ form.subject.label(class="control-label") }}
-        {{ form.subject(maxlength=128, class="form-control input-sm") }}
-        {% if form.subject.errors %}
-            <span class="text-danger help-block">{{ form.subject.errors[0] }}</span>
-        {% endif %}
+            {{ form.subject.label(class="control-label") }}
+            {{ form.subject(maxlength=128, class="form-control input-sm") }}
+            {% if form.subject.errors %}
+                <span class="text-danger help-block">{{ form.subject.errors[0] }}</span>
+            {% endif %}
         </p>
         
+        <!-- Location Field -->
         <p style="margin-top: 15px">
-        {{ form.place.label(class="control-label") }}
-        {{ form.place(maxlength=128, class="form-control input-sm") }}
-        {% if form.place.errors %}
-            <span class="text-danger help-block">{{ form.place.errors[0] }}</span>
-        {% endif %}
+            {{ form.place.label(class="control-label") }}
+            {{ form.place(maxlength=128, class="form-control input-sm") }}
+            {% if form.place.errors %}
+                <span class="text-danger help-block">{{ form.place.errors[0] }}</span>
+            {% endif %}
         </p>
         
+        <!-- Description Field -->
         <p style="margin-top: 15px">
-        {{ form.description.label(class="control-label") }}
-        {{ form.description(rows=5, maxlength=2048, class="form-control input-sm") }}
-        {% if form.description.errors %}
-            <span class="text-danger help-block">{{ form.description.errors[0] }}</span>
-        {% endif %}
+            {{ form.description.label(class="control-label") }}
+            {{ form.description(rows=5, maxlength=2048, class="form-control input-sm") }}
+            {% if form.description.errors %}
+                <span class="text-danger help-block">{{ form.description.errors[0] }}</span>
+            {% endif %}
         </p>
 
         {{ form.showForm(class="hidden") }}
+
+        <!-- Submit Button -->
         <p style="text-align: right; margin-top: 33px;">
             <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 142px; margin-left: 5px;" data-loading-text=" updating...">
                <span class="btn-txt">save changes</span>                            
             </button>
         </p>
     </form>
+    <!-- End Picture Edit Form -->
 </div>
       
 {% endblock %}
 
 {% block breadcrumbs %}
+<!-- Bread Crumbs -->
 <ul class="breadcrumb">
     {% if from_page == "home" %}
-  <li><a href="{{ url_for('home', page=page, _anchor=anchor, search=search, order=order, before=before, after=after) }}">Home</a></li>
-  {% elif from_page == "pictures" %}
-  <li><a href="{{ url_for('pictures', page=page, _anchor=anchor) }}">My Pictures</a></li>
-  {% endif %}
-  <li class="active">{% if image.subject %}{{ image.subject | capitalize }}{% else %}Untitled Picture{% endif %}</li>
+        <li>
+            <a href="{{ url_for('home', page=page, _anchor=anchor, search=search, order=order, before=before, after=after) }}">
+                Home
+            </a>
+        </li>
+    {% elif from_page == "pictures" %}
+        <li>
+            <a href="{{ url_for('pictures', page=page, _anchor=anchor) }}">
+                My Pictures
+            </a>
+        </li>
+    {% endif %}
+        <li class="active">
+            {% if image.subject %}
+                {{ image.subject | capitalize }}
+            {% else %}
+                Untitled Picture
+            {% endif %}
+        </li>
 </ul>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Bootstrap hook for disabling submit button on form submission
+    $('#submit').on('click', function () {
+        var $btn = $(this).button('loading');
+    });
+</script>
 {% endblock %}
