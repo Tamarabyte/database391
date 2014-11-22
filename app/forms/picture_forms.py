@@ -2,7 +2,8 @@
 Picture Forms
 - Contains the form for editing Image fields
 """
-
+import datetime
+from flask import flash
 from flask_wtf import Form
 from flask_login import current_user
 from wtforms import StringField, TextAreaField, SelectField, validators, BooleanField
@@ -19,6 +20,8 @@ class PictureForm(Form):
     subject = StringField('Title', validators=[length128Validator])
     place = StringField('Location', validators=[length128Validator])
     description = TextAreaField('Description', validators=[length2048Validator])
+    # Only editable by the admin
+    timing = StringField("Date Added (Only Editable for Admin)")
     # Used by JS to determine whether to show/hide the form
     showForm = BooleanField(default=False)
 
@@ -36,7 +39,7 @@ class PictureForm(Form):
             return False
 
         # All is reserved for our admin queries
-        if self.subject == "All Subjects":
+        if self.subject == "All Subjects" or self.subject == "No Subjects":
             self.subject.errors.append('*invalid subject name')
             return False
 
@@ -45,5 +48,14 @@ class PictureForm(Form):
         self.image_obj.subject = self.subject.data
         self.image_obj.place = self.place.data
         self.image_obj.description = self.description.data
+
+        if current_user.user_name == "admin":
+            try:
+                date = datetime.datetime.strptime(self.timing.data, "%Y-%m-%d").date()
+            except ValueError:
+                self.timing.errors = ("*invalid date format (use yyyy-mm-dd)",)
+                return False
+
+            self.image_obj.timing = self.timing.data
 
         return True

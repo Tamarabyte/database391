@@ -53,8 +53,8 @@ db.session.commit()
 # Clear text indexes
 indexFolder = WHOOSH_BASE + "/Image"
 indexFiles = os.listdir(indexFolder)
-for fileName in files:
-    os.remove(indexFolder+"/"+indexFiles)
+for fileName in indexFiles:
+    os.remove(indexFolder+"/"+fileName)
 
 # Clear image cache
 folderName = SERVE_FOLDER

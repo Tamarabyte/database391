@@ -6,7 +6,7 @@
 <div class="well" id="well" style="margin-bottom: 5px">
     
     <!-- Show delete/edit buttons if the image belongs to the user -->
-    {% if image.owner_name == current_user.user_name %}
+    {% if image.owner_name == current_user.user_name or current_user.user_name == "admin" %}
         <div class="pull-right thumb-ctrl">
 
             {% if from_page == "home" %}

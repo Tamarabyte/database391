@@ -37,7 +37,7 @@ class UploadForm(Form):
             return False
 
         # All is reserved for our admin queries
-        if self.subject == "All Subjects":
+        if self.subject == "All Subjects" or self.subject == "No Subjects":
             self.subject.errors.append('*invalid subject name')
             return False
 

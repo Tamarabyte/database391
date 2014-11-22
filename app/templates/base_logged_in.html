@@ -10,7 +10,7 @@
         {% block css %}
         {% endblock %}
 
-        <script src="http://code.jquery.com/jquery.js"></script>
+        <script src="/static/js/jquery-2.1.1.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
 
         {% block scriptlibs %}
@@ -44,8 +44,8 @@
                             <li><a href="/my/pictures">My Pictures</a></li>
                             <li><a href="/my/groups">My Groups</a></li>
                             <li><a href="/upload">Upload Pictures</a></li>
-                            {% if current_user.username == "admin" %}
-                            <li><a href="/upload">Admin</a></li>
+                            {% if current_user.user_name == "admin" %}
+                            <li><a href="/admin">Admin</a></li>
                             {% endif %}
                         </ul>
                     </div>

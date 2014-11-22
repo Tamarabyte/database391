@@ -8,7 +8,7 @@ on a thumbnail.
 import datetime
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
-from sqlalchemy import func, desc, asc
+from sqlalchemy import func, desc, asc, between
 
 from app import app, db, picture_views
 from ..models import Image, Group, Group_List, Popularity
@@ -60,13 +60,14 @@ def home(page=1, search=None):
     if before is not None and after is not None:
         date1 = datetime.datetime.strptime(after, "%Y-%m-%d").date()
         date2 = datetime.datetime.strptime(before, "%Y-%m-%d").date()
-        images = images.filter(Image.timing > date1, Image.timing < date2)
+        images = images.filter(between(Image.timing, date1, date2))
+        flash(str(images) + after + before)
     elif before is not None:
         date = datetime.datetime.strptime(before, "%Y-%m-%d").date()
-        images = images.filter(Image.timing < date)
+        images = images.filter(Image.timing <= date)
     elif after is not None:
         date = datetime.datetime.strptime(after, "%Y-%m-%d").date()
-        images = images.filter(Image.timing > date)
+        images = images.filter(Image.timing >= date)
     
     # Group by images to collapse popularities for each image
     images = images.group_by(Image.photo_id)
@@ -151,9 +152,10 @@ def delete_picture_from_details(id, page, from_page):
     picture = Image.query.get(id)
     
     # Redirect to the previous page if the picture does not exist
-    if picture is None or picture.owner_name != current_user.user_name:
+    if picture is None or (picture.owner_name != current_user.user_name and
+                           current_user.user_name != "admin"):
         flash("Picture does not exist!")
-        return redirect(url_for(from_page))
+        return redirect(url_for(app.config['FROM'][from_page]))
     
     # Confirmation method
     confirmation_link = url_for('delete_picture_from_details_confirm', page=page,

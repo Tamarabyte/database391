@@ -50,7 +50,8 @@ def picture(from_page, page, id):
     after = request.args.get("after", None)
     
     # Redirect to the previous page if the picture does not exist
-    if picture is None or picture.owner_name != current_user.user_name:
+    if picture is None or (picture.owner_name != current_user.user_name and
+                           current_user.user_name != "admin"):
         flash("Picture does not exist!")
         return redirect(url_for(app.config['FROM'][from_page]))
     
@@ -61,6 +62,7 @@ def picture(from_page, page, id):
         form.place.data = picture.place
         form.description.data = picture.description
         form.subject.data = picture.subject
+        form.timing.data = picture.timing
     
     # Commit changes if a valid form is submitted
     elif form.validate_on_submit():
@@ -104,7 +106,8 @@ def delete_helper(page, id, prev_page, confirmation_link,  search=None, order=No
     picture = Image.query.get(id)
     
     # redirect to the pictures page if the picture does not exist
-    if picture is None or picture.owner_name != current_user.user_name:
+    if picture is None or (picture.owner_name != current_user.user_name and
+                           current_user.user_name != "admin"):
         flash("Picture does not exist!")
         return redirect(url_for(prev_page))
     
@@ -122,7 +125,8 @@ def delete_confirm_helper(page, id, prev_page, search=None, order=None, before=N
     picture = Image.query.get(id)
     
     # Redirect to the previous page if the picture does not exist
-    if picture is None or picture.owner_name != current_user.user_name:
+    if picture is None or (picture.owner_name != current_user.user_name and
+                           current_user.user_name != "admin"):
         flash("Picture does not exist!")
         return redirect(url_for(prev_page))
     

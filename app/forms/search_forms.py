@@ -18,8 +18,8 @@ class InlineSearchForm(Form):
         ("relavence", "Relavence"),
         ))
     searchText = SelectMultipleField("Search Text", choices=[])
-    dateBefore = StringField("Posted Before")
-    dateAfter = StringField("Posted After")
+    dateBefore = StringField("To")
+    dateAfter = StringField("From")
     # Used by JS to determine whether to hide/show the form
     showSearch = BooleanField(default=False)
 

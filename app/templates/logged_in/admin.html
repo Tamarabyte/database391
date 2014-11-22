@@ -1,134 +1,147 @@
 {% extends "base_logged_in.html" %}
 
-{% block scripts %}
-<script>
-    $('#submit').on('click', function () {
-        $(this).button('loading')
-    });
-    
-    if ($('#showSearch').is(':checked')) {
-    $("#searchForm").show();
-    $("#show-search-btn").addClass("icon-delete");
-    $("#show-search-btn").addClass("btn-default");
-  }
-  else {
-    $("#show-search-btn").addClass("icon-plus");
-    $("#show-search-btn").addClass("btn-success");
-    $("#searchForm").hide();
-  }
-  
-  $("#show-search-btn").on('click', function(event) {
-    event.preventDefault();
-    $("#searchForm").toggle();
-    $('#showSearch').prop("checked", !$('#showSearch').prop("checked"));
-    $("#show-search-btn").toggleClass("icon-plus");
-    $("#show-search-btn").toggleClass("btn-default")
-    $("#show-search-btn").toggleClass("icon-delete");
-    $("#show-search-btn").toggleClass("btn-success")
-    $("#show-search-btn").blur();
-  });
-  
-</script>
+{% block scriptlibs %}
+  <!-- table sorting js library -->
+  <script src="/static/js/jquery.tablesorter.min.js"></script>
 {% endblock %}
 
 {% block header %}<h1> {{ title }}</h1>{% endblock %}
 
 {% block content %}
 <div class="well" style="padding-top: 50px; padding-right: 50px; padding-left:50px">
-      
-    <!-- FORM -->
-    
+
+    <!-- Report Form Section -->
     <legend class="pull-left" style="width: auto">Generate Report</legend>
     <button class="btn pull-right" id="show-search-btn"></button>
     <div class="clearfix"></div>
-    
+
+    <!-- Report Form -->
     <form action="" method="post" name="submit" id="searchForm">
-    {{ form.hidden_tag() }}
-    
-    <div class="search-field">
-        {{ form.user.label(class="control-label") }}
-        {{ form.user(class="form-control input-sm") }}
-        {% if form.user.errors %}
-            <span class="text-danger help-block">{{ form.user.errors[0] }}</span>
-        {% endif %}
-    </div>
-    
-    <div class="search-field">
-        {{ form.subject.label(class="control-label") }}
-        {{ form.subject(class="form-control input-sm") }}
-        {% if form.subject.errors %}
-            <span class="text-danger help-block">{{ form.user.errors[0] }}</span>
-        {% endif %}
-    </div>
-    
-    <div class="search-field">
-        <div style="display: inline-block; width: 150px">
-        {{ form.dateAfter.label(class="control-label") }}
-        {{ form.dateAfter(class="form-control input-sm", placeholder="yyyy-mm-dd") }}
-        </div><div style="display: inline-block; margin-left: 50px;">
-        {{ form.dateBefore.label(class="control-label") }}
-        {{ form.dateBefore(class="form-control input-sm", style="width: 150px", placeholder="yyyy-mm-dd") }}
+        {{ form.hidden_tag() }}
+
+        <!-- User Select -->
+        <div class="search-field">
+            {{ form.user.label(class="control-label") }}
+            {{ form.user(class="form-control input-sm") }}
+            {% if form.user.errors %}
+                <span class="text-danger help-block">{{ form.user.errors[0] }}</span>
+            {% endif %}
         </div>
-        <div class="clearfix""> </div>
-        {% if form.dateAfter.errors %}
-            <span class="text-danger help-block">{{ form.dateAfter.errors[0] }}</span>
-        {% elif  form.dateBefore.errors %}
-             <span class="text-danger help-block">{{ form.dateBefore.errors[0] }}</span>
-        {% endif %}
-    </div>
-    
-    <div class="search-field">
-        {{ form.hierarchy.label(class="control-label") }}
-        {{ form.hierarchy(class="form-control input-sm") }}
-        {% if form.subject.errors %}
-            <span class="text-danger help-block">{{ form.hierarchy.errors[0] }}</span>
-        {% endif %}
-    </div>
-    
-    <div class="search-field">
-    <div class="pull-right" style="margin-top: 20px">
-        <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 110px; margin-left: 5px; margin-bottom: 3px;" data-loading-text=" search">
-            <span class="btn-txt">search</span>                            
-        </button>
-    </div>
-    </div>
-     <div class="clearfix" style="margin-bottom: 20px"></div>
-     {{ form.showSearch(class="hidden") }}
+
+        <!-- Subject Select -->
+        <div class="search-field">
+            {{ form.subject.label(class="control-label") }}
+            {{ form.subject(class="form-control input-sm") }}
+            {% if form.subject.errors %}
+                <span class="text-danger help-block">{{ form.subject.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- From/To Date input fields -->
+        <div class="search-field">
+            <div style="display: inline-block; width: 150px">
+            {{ form.dateAfter.label(class="control-label") }}
+            {{ form.dateAfter(class="form-control input-sm", placeholder="yyyy-mm-dd") }}
+            </div><div style="display: inline-block; margin-left: 50px;">
+            {{ form.dateBefore.label(class="control-label") }}
+            {{ form.dateBefore(class="form-control input-sm", style="width: 150px", placeholder="yyyy-mm-dd") }}
+            </div>
+            <div class="clearfix""> </div>
+            {% if form.dateAfter.errors %}
+                <span class="text-danger help-block">{{ form.dateAfter.errors[0] }}</span>
+            {% elif  form.dateBefore.errors %}
+                 <span class="text-danger help-block">{{ form.dateBefore.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Time Hierarchy select -->
+        <div class="search-field">
+            {{ form.hierarchy.label(class="control-label") }}
+            {{ form.hierarchy(class="form-control input-sm") }}
+            {% if form.hierarchy.errors %}
+                <span class="text-danger help-block">{{ form.hierarchy.errors[0] }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="search-field">
+        <div class="pull-right" style="margin-top: 20px">
+            <button type="submit" id="submit" class="icon-rocket2 btn btn-success" value="submit" style="width: 115px; margin-left: 5px; margin-bottom: 3px;" data-loading-text=" generate">
+                <span class="btn-txt">generate</span>
+            </button>
+        </div>
+        </div>
+         <div class="clearfix" style="margin-bottom: 20px"></div>
+         {{ form.showSearch(class="hidden") }}
     </form>
-    
-    <!-- END FORM -->
-    
+
+    <!-- End Report Form Section -->
+
     <hr style="margin-top: 0px;">
-        
-    <!-- TABLE -->
-    
+
+    <!-- Report Table Section -->
     {% if rows %}
+
     <div style="overflow-x: auto">
-    <table class="table table-striped table-hover ">
+    <table id="reportTable" class="table table-striped table-hover tablesorter" style="border: 1px solid #aaa">
             <thead>
-              <tr class="success" style="white-space: nowrap">
-                {% if row_header %}
-                <th>{{ row_header }}</th>
-                {% endif %}
-                {% for header in headers %}
-                <th>{{ header }}</th>
-                {% endfor %}
-              </tr>
+                <!-- Table Headers -->
+                <tr class="active" style="white-space: nowrap">
+                  {% for header in headers %}
+                  <th>{{ header }}</th>
+                  {% endfor %}
+                </tr>
             </thead>
             <tbody>
+            <!-- Report Rows -->
             {% for row in rows %}
-              <tr class="active">
-                {% for column in row %}
-                    <td>{{column}}</td>
-                {% endfor %}
-              </tr>
+                <tr class="active">
+                  {% for column in row %}
+                      <td>{% if column is none %} Subtotal {% else %}{{column}}{% endif %}</td>
+                  {% endfor %}
+                </tr>
             {% endfor %}
-            </tbody>
     </table>
     </div>
-    
     {% endif %}
-    
+    <!-- End Report Table Section -->
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Toggles Showing/Hidind of the Generate Report Form
+    if ($('#showSearch').is(':checked')) {
+        $("#searchForm").show();
+        $("#show-search-btn").addClass("icon-delete");
+        $("#show-search-btn").addClass("btn-default");
+    }
+    else {
+        $("#show-search-btn").addClass("icon-plus");
+        $("#show-search-btn").addClass("btn-success");
+        $("#searchForm").hide();
+    }
+
+    $("#show-search-btn").on('click', function(event) {
+      event.preventDefault();
+      $("#searchForm").toggle();
+      $('#showSearch').prop("checked", !$('#showSearch').prop("checked"));
+      $("#show-search-btn").toggleClass("icon-plus");
+      $("#show-search-btn").toggleClass("btn-default")
+      $("#show-search-btn").toggleClass("icon-delete");
+      $("#show-search-btn").toggleClass("btn-success")
+      $("#show-search-btn").blur();
+    });
+
+    // Setup for table column sorting
+    $(document).ready(function(){
+        $("#reportTable").tablesorter();
+    });
+
+    // Disable submit button while form is submitting
+    $('#submit').on('click', function () {
+        $(this).button('loading')
+    });
+</script>
 {% endblock %}
