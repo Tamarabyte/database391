@@ -61,7 +61,6 @@ def home(page=1, search=None):
         date1 = datetime.datetime.strptime(after, "%Y-%m-%d").date()
         date2 = datetime.datetime.strptime(before, "%Y-%m-%d").date()
         images = images.filter(between(Image.timing, date1, date2))
-        flash(str(images) + after + before)
     elif before is not None:
         date = datetime.datetime.strptime(before, "%Y-%m-%d").date()
         images = images.filter(Image.timing <= date)

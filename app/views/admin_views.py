@@ -2,7 +2,7 @@
 View for the admin page and helper functions
 for generation reports
 """
-
+import datetime
 from flask import render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from sqlalchemy import func, select, outerjoin, extract
@@ -138,6 +138,7 @@ def allTimeUsersLeft(headers, after, before, user, subject):
         SQL generated for reports where Users are in the first column.
         Used when Time Hierarchy = "All Time"
     """
+
     if subject == "All Subjects":
         subjects = [image.subject for image in Image.query.all()]
     elif subject is not None:
@@ -146,6 +147,7 @@ def allTimeUsersLeft(headers, after, before, user, subject):
         subjects = []
 
     columns = ["users.user_name"]
+
     # Build list of columns to select by
     for name in subjects:
         columns += ["SUM( CASE images.subject WHEN '{0}' THEN 1 ELSE 0 END ) AS '{0}'".format(name)]
@@ -158,12 +160,15 @@ def allTimeUsersLeft(headers, after, before, user, subject):
     statement = select(columns, from_obj=User) \
         .where(getUserFilter(user)) \
         .where(getDateRangeFilter(after, before)) \
-        .select_from(j) \
-        .group_by("users.user_name WITH ROLLUP")
+        .select_from(j)
+
+    if user is not None:
+        statement = statement.group_by("users.user_name WITH ROLLUP")
 
     # Generate headers for report table
     new_headers = subjects
     select_columns = subjects
+
     if not singleSubject(subject):
         new_headers = new_headers + ["Total"]
         select_columns = select_columns + ["Total"]
@@ -319,9 +324,25 @@ def getWeeks():
 
 def getYears(after, before):
     """ Gets years in number format. """
-    years = db.session.query(func.min(extract('year', Image.timing)), func.max(extract('year', Image.timing))) \
-            .filter(getDateRangeFilter(after, before)).first()
-    return [str(year) for year in list(range(years[0], years[1]+1))]
+
+    if before is None:
+        before_year = datetime.date.today().year
+    else:
+        before_year = datetime.datetime.strptime(before, "%Y-%m-%d").date().year
+
+    if after is None:
+        after_year = db.session.query(func.min(extract('year', Image.timing))).all()
+        if not after_year or after_year[0][0] is None:
+            after_year = before_year
+        else:
+            after_year = after_year[0][0]
+            if after_year > before_year:
+                after_year = before_year
+    else:
+        after_year = datetime.datetime.strptime(after, "%Y-%m-%d").date().year
+        
+    years = [str(year) for year in list(range(int(after_year), int(before_year)+1))]
+    return years
 
 def getSubjectFilter(subject):
     """ Generates sql for filtering by image subject """
