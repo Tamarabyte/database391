@@ -85,8 +85,6 @@ def generateReport(form):
     if query:
         rows = query.all()
 
-    flash(query)
-
     return render_template('logged_in/admin.html', title='Admin', current_user=current_user,
                            form=form, headers=headers, rows=rows)
 

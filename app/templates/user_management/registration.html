@@ -26,6 +26,15 @@
     
             <!-- Password Field -->
             <p>
+                {{ form.password.label(class="control-label") }}
+                {{ form.password(maxlength=24, class="form-control input-sm") }}
+                {% if form.password.errors %}
+                  <span class="text-danger help-block">{{ form.password.errors[0] }}</span>
+                {% endif %}
+            </p>
+
+            <!-- Password Confirm Field -->
+            <p>
                 {{ form.retype_password.label(class="control-label") }}
                 {{ form.retype_password(maxlength=24, class="form-control input-sm") }}
                 {% if form.retype_password.errors %}
@@ -33,7 +42,7 @@
                 {% endif %}
             </p>
             
-            <!-- Password Confirm Field -->
+            <!-- Email Field -->
             <p>
                 {{ form.email.label(class="control-label") }}
                 {{ form.email(maxlength=128, class="form-control input-sm") }}

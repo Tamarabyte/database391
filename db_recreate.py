@@ -57,7 +57,7 @@ for fileName in indexFiles:
     os.remove(indexFolder+"/"+fileName)
 
 # Clear image cache
-folderName = SERVE_FOLDER
+folderName = "/home/html" + SERVE_FOLDER
 files = os.listdir(folderName)
 for fileName in files:
     os.remove(folderName+"/"+fileName)
